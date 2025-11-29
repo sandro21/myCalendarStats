@@ -1,5 +1,5 @@
 import Image from "next/image";
-
+import "@/lib/calendar/stats";
 
 export default function Home() {
   return (

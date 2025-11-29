@@ -13,6 +13,64 @@ export interface CalendarEvent {
   }
 
 
+//Deriving the CalendarEvent from the CreateCalendarEventInput
+
+    //CreateCalendarEventInput is the initial interface from which used to derive CalendarEvent
+    export interface CreateCalendarEventInput  {
+        id: string;
+        calendarId: string;
+        title: string;
+        start: Date;
+        end: Date;
+        isAllDay?: boolean; // optional; default false
+    }
+
+    //CreateCalendarEventInput to CalendarEvent converter (adds durationMinutes, dayOfWeek, dayString, and isAllDay)
+    export function createCalendarEvent(input: CreateCalendarEventInput ): CalendarEvent { 
+        // Destructure input and provide a default for isAllDay so it is always a boolean
+        const {id, calendarId, title, start, end, isAllDay = false} = input;
+
+        const durationMs = end.getTime() - start.getTime();
+        const durationMinutes = Math.round(durationMs / (1000 * 60)); //Ms to Minutes
+
+        const dayOfWeek = start.getDay(); 
+
+        const year = start.getFullYear();
+        const month = String(start.getMonth() + 1).padStart(2, '0');
+        const day = String(start.getDate()).padStart(2, "0");
+        const dayString = `${year}-${month}-${day}`;
+
+        return {
+            id,
+            calendarId,
+            title,
+            start,
+            end,
+            durationMinutes,
+            dayOfWeek,
+            dayString,
+            isAllDay,
+          };
+}
+
+// TEMP: manual test with event
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export interface GlobalStats {
     totalCount: number;
     uniqueActivities: number;
