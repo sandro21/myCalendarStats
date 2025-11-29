@@ -98,6 +98,14 @@ export interface ActivityStats {
   } | null;
 }
 
+export interface TopActivity {
+  name: string;
+  count: number;
+  totalMinutes: number;
+  longestSessionMinutes: number;
+  averageSessionMinutes: number;
+}
+
 export interface TimeBreakdown {
   days: number;
   hours: number;
@@ -281,6 +289,58 @@ export  function computeActivityStats(
         longestStreak,
         biggestBreak,
       };
+}
+
+// Top Activities
+export function computeTopActivities(
+  events: CalendarEvent[],
+  sortBy: "count" | "time" = "count",
+  limit: number = 5
+): TopActivity[] {
+  // Group events by title
+  const activityMap = new Map<string, CalendarEvent[]>();
+  
+  for (const event of events) {
+    const title = event.title;
+    if (!activityMap.has(title)) {
+      activityMap.set(title, []);
+    }
+    activityMap.get(title)!.push(event);
+  }
+
+  // Compute stats for each activity
+  const activities: TopActivity[] = [];
+  
+  for (const [name, activityEvents] of activityMap.entries()) {
+    const count = activityEvents.length;
+    const totalMinutes = activityEvents.reduce(
+      (sum, event) => sum + event.durationMinutes,
+      0
+    );
+    const durations = activityEvents.map((event) => event.durationMinutes);
+    const longestSessionMinutes = Math.max(...durations);
+    const averageSessionMinutes = Math.round(totalMinutes / count);
+
+    activities.push({
+      name,
+      count,
+      totalMinutes,
+      longestSessionMinutes,
+      averageSessionMinutes,
+    });
+  }
+
+  // Sort by count or total time
+  activities.sort((a, b) => {
+    if (sortBy === "count") {
+      return b.count - a.count; // descending
+    } else {
+      return b.totalMinutes - a.totalMinutes; // descending
+    }
+  });
+
+  // Return top N
+  return activities.slice(0, limit);
 }
 
 
