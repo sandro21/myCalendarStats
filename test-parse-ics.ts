@@ -23,6 +23,20 @@ async function main() {
   console.log("Days/Hours/Minutes:", formatAsDaysHoursMinutes(stats.totalMinutes));
   console.log("Hours/Minutes:", formatAsHoursMinutes(stats.totalMinutes));
   console.log("Minutes:", formatAsMinutes(stats.totalMinutes));
+
+  // Test time filtering
+  const { filterByTimeRange, filterByCalendars } = await import("./src/lib/calendar/filter");
+  const filtered = filterByTimeRange(events, { type: "month", year: 2025, month: 7 });
+  console.log("\n--- Time Filter Test ---");
+  console.log("Total events:", events.length);
+  console.log("Events in July 2025:", filtered.length);
+
+  // Test calendar filtering
+  const fitnessOnly = filterByCalendars(events, ["fitness"]);
+  console.log("\n--- Calendar Filter Test ---");
+  console.log("Total events:", events.length);
+  console.log("Fitness events only:", fitnessOnly.length);
+  console.log("First fitness event:", fitnessOnly[0]?.title);
 }
 
 // Actually run the script
