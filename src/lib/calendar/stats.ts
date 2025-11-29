@@ -343,6 +343,34 @@ export function computeTopActivities(
   return activities.slice(0, limit);
 }
 
+// Timeline Bookends
+export interface TimelineBookends {
+  firstActivities: CalendarEvent[];
+  lastActivities: CalendarEvent[];
+}
+
+export function getTimelineBookends(
+  events: CalendarEvent[],
+  count: number = 5
+): TimelineBookends {
+  if (events.length === 0) {
+    return {
+      firstActivities: [],
+      lastActivities: [],
+    };
+  }
+
+  const sorted = sortEventsByDate(events);
+  
+  const firstActivities = sorted.slice(0, count);
+  const lastActivities = sorted.slice(-count).reverse(); // Reverse so most recent is first
+
+  return {
+    firstActivities,
+    lastActivities,
+  };
+}
+
 
 // ============================================================================
 // Time Formatting Utilities
