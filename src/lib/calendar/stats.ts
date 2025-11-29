@@ -53,24 +53,8 @@ export interface CalendarEvent {
           };
 }
 
-// TEMP: manual test with event
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/////////////////////////////////////////////////
+//Global Stats Calculation
 export interface GlobalStats {
     totalCount: number;
     uniqueActivities: number;
