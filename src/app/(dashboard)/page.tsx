@@ -10,6 +10,7 @@ import {
 } from "@/lib/calculations/stats";
 import { loadLocalCalendars } from "@/lib/calculations/load-local-calendars";
 import { ActivityPieChart } from "@/components/ActivityPieChart";
+import { LoggingProgressChart } from "@/components/LoggingProgressChart";
 
 export default function Home() {
   const events = loadLocalCalendars([
@@ -76,12 +77,12 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Right big card – chart placeholder for now */}
-            <div className="card-soft row-span-2 flex flex-col px-8 py-6">
-              <h3 className="text-card-title text-black mb-4">Logging Progress</h3>
-              <p className="text-body-24 text-[color:var(--gray)]">
-                [Line chart placeholder for total minutes over time]
-              </p>
+            {/* Right big card – Logging Progress Chart */}
+            <div className="card-soft row-span-2 flex flex-col px-8 py-6 text-left">
+              <h3 className="text-card-title mb-4">Logging Progress</h3>
+              <div className="flex-1 min-h-0 w-full">
+                <LoggingProgressChart events={events} />
+              </div>
             </div>
 
             {/* Time Logged */}
