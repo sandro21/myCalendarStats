@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Urbanist } from "next/font/google";
 import "./globals.css";
+import { GlobalFilterBar } from "@/components/GlobalFilterBar";
+import { FilterProvider } from "@/contexts/FilterContext";
 
 const urbanist = Urbanist({
   subsets: ["latin"],
@@ -19,7 +21,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${urbanist.className} antialiased`}>{children}</body>
+      <body className={`${urbanist.className} antialiased`}>
+        <FilterProvider>
+          <div className="min-h-screen bg-[color:var(--page-bg)] bg-blobs">
+            <div className="mx-auto px-18 py-12">
+              <GlobalFilterBar />
+            </div>
+            {children}
+          </div>
+        </FilterProvider>
+      </body>
     </html>
   );
 }

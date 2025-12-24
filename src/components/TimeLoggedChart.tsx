@@ -1,7 +1,7 @@
 "use client";
 
 import { CalendarEvent } from "@/lib/calculations/stats";
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import {
   AreaChart,
   Area,
@@ -12,10 +12,15 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { formatAsCompactHoursMinutes } from "@/lib/calculations/stats";
+import { useFilter } from "@/contexts/FilterContext";
+import { ChevronDown } from "lucide-react";
 
 interface TimeLoggedChartProps {
   events: CalendarEvent[];
+  title?: string;
 }
+
+type IntervalType = "Daily" | "Every 4 days" | "Weekly" | "Monthly";
 
 // Manual month formatting to avoid hydration errors
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -31,36 +36,87 @@ interface ChartDataPoint {
   monthLabel?: string;
 }
 
-export function TimeLoggedChart({ events }: TimeLoggedChartProps) {
-  // Group events by week and calculate total minutes per week
+export function TimeLoggedChart({ events, title = "Time Logged" }: TimeLoggedChartProps) {
+  const { selectedFilter } = useFilter();
+  
+  // Determine available intervals based on filter type
+  const availableIntervals: IntervalType[] = useMemo(() => {
+    if (selectedFilter === "Month") {
+      return ["Daily", "Every 4 days", "Weekly"];
+    } else if (selectedFilter === "Year") {
+      return ["Daily", "Weekly", "Monthly"];
+    } else {
+      return ["Weekly", "Monthly"];
+    }
+  }, [selectedFilter]);
+
+  // Set default interval based on filter type
+  const defaultInterval: IntervalType = useMemo(() => {
+    if (selectedFilter === "Month") {
+      return "Daily";
+    } else if (selectedFilter === "Year") {
+      return "Weekly";
+    } else {
+      return "Monthly";
+    }
+  }, [selectedFilter]);
+
+  const [selectedInterval, setSelectedInterval] = useState<IntervalType>(defaultInterval);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  // Update interval when filter type changes
+  useEffect(() => {
+    setSelectedInterval(defaultInterval);
+  }, [defaultInterval]);
+
+  // Group events by interval and calculate total minutes
   const chartData = useMemo(() => {
     if (events.length === 0) {
       return [];
     }
 
-    // Helper function to get week start date (Monday)
-    const getWeekStart = (date: Date): Date => {
+    // Helper functions for different intervals
+    const getIntervalStart = (date: Date, interval: IntervalType): Date => {
       const d = new Date(date);
-      const day = d.getDay();
-      const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Adjust when day is Sunday
-      return new Date(d.setDate(diff));
+      d.setHours(0, 0, 0, 0);
+      
+      if (interval === "Daily") {
+        return d;
+      } else if (interval === "Every 4 days") {
+        // Round down to nearest 4-day interval (starting from a fixed date)
+        const epoch = new Date(2020, 0, 1); // Fixed reference date
+        const daysSinceEpoch = Math.floor((d.getTime() - epoch.getTime()) / (1000 * 60 * 60 * 24));
+        const intervalNumber = Math.floor(daysSinceEpoch / 4);
+        const daysToAdd = intervalNumber * 4;
+        const result = new Date(epoch);
+        result.setDate(result.getDate() + daysToAdd);
+        return result;
+      } else if (interval === "Weekly") {
+        // Week start (Monday)
+        const day = d.getDay();
+        const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+        return new Date(d.setDate(diff));
+      } else if (interval === "Monthly") {
+        // First day of month
+        return new Date(d.getFullYear(), d.getMonth(), 1);
+      }
+      return d;
     };
 
-    // Helper function to format week key (YYYY-MM-DD of week start)
-    const getWeekKey = (date: Date): string => {
-      const weekStart = getWeekStart(date);
-      const year = weekStart.getFullYear();
-      const month = String(weekStart.getMonth() + 1).padStart(2, "0");
-      const day = String(weekStart.getDate()).padStart(2, "0");
+    const getIntervalKey = (date: Date, interval: IntervalType): string => {
+      const intervalStart = getIntervalStart(date, interval);
+      const year = intervalStart.getFullYear();
+      const month = String(intervalStart.getMonth() + 1).padStart(2, "0");
+      const day = String(intervalStart.getDate()).padStart(2, "0");
       return `${year}-${month}-${day}`;
     };
 
-    // Group by week
-    const eventsByWeek = new Map<string, number>();
+    // Group by interval
+    const eventsByInterval = new Map<string, number>();
     events.forEach((event) => {
-      const weekKey = getWeekKey(event.start);
-      const currentMinutes = eventsByWeek.get(weekKey) || 0;
-      eventsByWeek.set(weekKey, currentMinutes + event.durationMinutes);
+      const intervalKey = getIntervalKey(event.start, selectedInterval);
+      const currentMinutes = eventsByInterval.get(intervalKey) || 0;
+      eventsByInterval.set(intervalKey, currentMinutes + event.durationMinutes);
     });
 
     // Find the date range
@@ -70,52 +126,64 @@ export function TimeLoggedChart({ events }: TimeLoggedChartProps) {
     const minDate = new Date(Math.min(...allDates.map(d => d.getTime())));
     const maxDate = new Date(Math.max(...allDates.map(d => d.getTime())));
     
-    // Get the week start for the first and last dates
-    const firstWeekStart = getWeekStart(minDate);
-    const lastWeekStart = getWeekStart(maxDate);
+    // Get the interval start for the first and last dates
+    const firstIntervalStart = getIntervalStart(minDate, selectedInterval);
+    const lastIntervalStart = getIntervalStart(maxDate, selectedInterval);
     
-    // Generate all weeks in the range (including weeks with no events)
-    const allWeeks: string[] = [];
-    const currentWeek = new Date(firstWeekStart);
+    // Generate all intervals in the range
+    const allIntervals: string[] = [];
+    const currentInterval = new Date(firstIntervalStart);
     
-    while (currentWeek <= lastWeekStart) {
-      const weekKey = getWeekKey(currentWeek);
-      allWeeks.push(weekKey);
-      // Move to next week (add 7 days)
-      currentWeek.setDate(currentWeek.getDate() + 7);
+    while (currentInterval <= lastIntervalStart) {
+      const intervalKey = getIntervalKey(currentInterval, selectedInterval);
+      if (!allIntervals.includes(intervalKey)) {
+        allIntervals.push(intervalKey);
+      }
+      
+      // Move to next interval
+      if (selectedInterval === "Daily") {
+        currentInterval.setDate(currentInterval.getDate() + 1);
+      } else if (selectedInterval === "Every 4 days") {
+        currentInterval.setDate(currentInterval.getDate() + 4);
+      } else if (selectedInterval === "Weekly") {
+        currentInterval.setDate(currentInterval.getDate() + 7);
+      } else if (selectedInterval === "Monthly") {
+        currentInterval.setMonth(currentInterval.getMonth() + 1);
+      }
     }
     
-    // Create data points for all weeks, filling in missing ones with 0
-    const data: ChartDataPoint[] = allWeeks.map((weekKey, index) => {
-      const [year, month, day] = weekKey.split('-').map(Number);
+    // Create data points for all intervals, filling in missing ones with 0
+    const data: ChartDataPoint[] = allIntervals.map((intervalKey, index) => {
+      const [year, month, day] = intervalKey.split('-').map(Number);
       const dateObj = new Date(year, month - 1, day);
       
-      // Check if this is first week of month - compare with previous week
-      let isFirstWeekOfMonth = false;
-      if (index === 0) {
-        isFirstWeekOfMonth = true;
-      } else {
-        const prevWeekKey = allWeeks[index - 1];
-        const [prevYear, prevMonth] = prevWeekKey.split('-').map(Number);
-        // Check if month or year changed (month is 1-12 from string)
-        if (prevMonth !== month || prevYear !== year) {
-          isFirstWeekOfMonth = true;
+      // Determine label based on interval type
+      let monthLabel = '';
+      if (selectedInterval === "Monthly") {
+        monthLabel = formatMonth(month - 1);
+      } else if (selectedInterval === "Weekly") {
+        // Show month label for first week of month
+        if (index === 0) {
+          monthLabel = formatMonth(month - 1);
+        } else {
+          const prevIntervalKey = allIntervals[index - 1];
+          const [prevYear, prevMonth] = prevIntervalKey.split('-').map(Number);
+          if (prevMonth !== month || prevYear !== year) {
+            monthLabel = formatMonth(month - 1);
+          }
         }
       }
       
-      // month is 1-12, formatMonth expects 0-11
-      const monthLabel = isFirstWeekOfMonth ? formatMonth(month - 1) : '';
-      
       return {
-        date: weekKey,
-        minutes: eventsByWeek.get(weekKey) || 0, // 0 if no events in this week
+        date: intervalKey,
+        minutes: eventsByInterval.get(intervalKey) || 0,
         dateObj,
         monthLabel,
       };
     });
 
     return data;
-  }, [events]);
+  }, [events, selectedInterval]);
 
   // Calculate number of unique months
   const uniqueMonths = useMemo(() => {
@@ -154,6 +222,20 @@ export function TimeLoggedChart({ events }: TimeLoggedChartProps) {
       const data = payload[0].payload;
       if (!coordinate) return null;
       
+      const getTooltipLabel = () => {
+        const [year, month, day] = data.date.split('-').map(Number);
+        if (selectedInterval === "Daily") {
+          return `${formatMonth(month - 1)} ${day}, ${year}`;
+        } else if (selectedInterval === "Every 4 days") {
+          return `${formatMonth(month - 1)} ${day}, ${year}`;
+        } else if (selectedInterval === "Weekly") {
+          return `Week of ${formatMonth(month - 1)} ${day}, ${year}`;
+        } else if (selectedInterval === "Monthly") {
+          return `${formatMonth(month - 1)} ${year}`;
+        }
+        return `${formatMonth(month - 1)} ${day}, ${year}`;
+      };
+      
       return (
         <div 
           className="bg-white/70 backdrop-blur-sm border border-gray-200/30 rounded-xl p-2 shadow-lg"
@@ -166,10 +248,7 @@ export function TimeLoggedChart({ events }: TimeLoggedChartProps) {
           }}
         >
           <p className="text-sm font-semibold text-black">
-            Week of {(() => {
-              const [year, month, day] = data.date.split('-').map(Number);
-              return `${formatMonth(month - 1)} ${day}, ${year}`;
-            })()}
+            {getTooltipLabel()}
           </p>
           <p className="text-sm text-[color:var(--red-1)]">
             {formatAsCompactHoursMinutes(data.minutes)}
@@ -189,9 +268,48 @@ export function TimeLoggedChart({ events }: TimeLoggedChartProps) {
   }
 
   return (
-    <div className="w-full h-full min-h-[300px]">
+    <div className="w-full h-full min-h-[300px] flex flex-col">
+      {/* Title and Interval Selector */}
+      <div className="mb-4 flex items-center justify-between px-6">
+        <h3 className="text-card-title">{title}</h3>
+        <div className="relative">
+          <div 
+            className="bg-white px-3 py-1.5 rounded-full flex items-center gap-1.5 cursor-pointer text-[18px] text-black"
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+          >
+            <span>Interval: {selectedInterval}</span>
+            <ChevronDown size={14} className={`transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+          </div>
+          
+          {isDropdownOpen && (
+            <>
+              <div 
+                className="fixed inset-0 z-10" 
+                onClick={() => setIsDropdownOpen(false)}
+              />
+              <div className="absolute top-full mt-2 right-0 bg-white rounded-lg shadow-lg z-20 min-w-[180px]">
+                {availableIntervals.map((interval) => (
+                  <button
+                    key={interval}
+                    onClick={() => {
+                      setSelectedInterval(interval);
+                      setIsDropdownOpen(false);
+                    }}
+                    className={`w-full text-left px-3 py-1.5 text-[18px] text-black hover:bg-gray-100 first:rounded-t-lg last:rounded-b-lg ${
+                      selectedInterval === interval ? 'bg-[rgba(219,30,24,0.1)]' : ''
+                    }`}
+                  >
+                    {interval}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+
       <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={chartData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }} style={{ position: 'relative' }}>
+        <AreaChart data={chartData} margin={{ top: 10, right:10, left: 0, bottom: 0 }} style={{ position: 'relative' }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
           <XAxis
             dataKey="date"
@@ -204,7 +322,7 @@ export function TimeLoggedChart({ events }: TimeLoggedChartProps) {
             stroke="#3B3C40"
             style={{ fontSize: '12px' }}
             tickFormatter={(value) => formatAsCompactHoursMinutes(value)}
-            width={50}
+            width={60}
             tick={{ fontSize: 12 }}
             axisLine={false}
           />
