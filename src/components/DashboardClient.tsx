@@ -17,6 +17,7 @@ import { TopActivitiesChart } from "@/components/TopActivitiesChart";
 import { DayOfWeekChart } from "@/components/DayOfWeekChart";
 import { ActivityDurationChart } from "@/components/ActivityDurationChart";
 import { TimeOfDayChart } from "@/components/TimeOfDayChart";
+import { EventTimelineChart } from "@/components/EventTimelineChart";
 
 interface DashboardClientProps {
   events: CalendarEvent[];
@@ -223,6 +224,18 @@ export function DashboardClient({ events }: DashboardClientProps) {
               <div className="flex-1 min-h-0 w-full">
                 <TopActivitiesChart events={filteredEvents} topActivities={topActivitiesForChart} />
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Event Timeline */}
+        <section className="space-y-[40px]">
+          <h2 className="text-section-header text-black mb-4">
+            Event Timeline
+          </h2>
+          <div className="card-soft flex flex-col px-8 py-6">
+            <div className="flex-1 min-h-0 w-full" style={{ minHeight: '500px' }}>
+              <EventTimelineChart events={filteredEvents} />
             </div>
           </div>
         </section>
