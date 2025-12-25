@@ -37,7 +37,7 @@ interface ChartDataPoint {
 }
 
 export function TimeLoggedChart({ events, title = "Time Logged" }: TimeLoggedChartProps) {
-  const { selectedFilter } = useFilter();
+  const { selectedFilter, currentYear } = useFilter();
   
   // Determine available intervals based on filter type
   const availableIntervals: IntervalType[] = useMemo(() => {
@@ -119,7 +119,97 @@ export function TimeLoggedChart({ events, title = "Time Logged" }: TimeLoggedCha
       eventsByInterval.set(intervalKey, currentMinutes + event.durationMinutes);
     });
 
-    // Find the date range
+    // Special handling for Year filter - show entire year for all intervals
+    if (selectedFilter === "Year") {
+      const allIntervals: string[] = [];
+      let currentInterval: Date;
+      
+      if (selectedInterval === "Monthly") {
+        // Generate all 12 months for the selected year
+        for (let month = 0; month < 12; month++) {
+          const monthDate = new Date(currentYear, month, 1);
+          const intervalKey = getIntervalKey(monthDate, selectedInterval);
+          allIntervals.push(intervalKey);
+        }
+      } else if (selectedInterval === "Weekly") {
+        // Generate all weeks in the year (from Jan 1 to Dec 31)
+        const yearStart = new Date(currentYear, 0, 1); // January 1
+        const yearEnd = new Date(currentYear, 11, 31); // December 31
+        const firstWeekStart = getIntervalStart(yearStart, selectedInterval);
+        const lastWeekStart = getIntervalStart(yearEnd, selectedInterval);
+        
+        currentInterval = new Date(firstWeekStart);
+        while (currentInterval <= lastWeekStart) {
+          const intervalKey = getIntervalKey(currentInterval, selectedInterval);
+          // Only include weeks that are within the selected year
+          if (currentInterval.getFullYear() === currentYear || 
+              (currentInterval.getFullYear() === currentYear - 1 && currentInterval.getMonth() === 11)) {
+            if (!allIntervals.includes(intervalKey)) {
+              allIntervals.push(intervalKey);
+            }
+          }
+          currentInterval.setDate(currentInterval.getDate() + 7);
+        }
+      } else if (selectedInterval === "Daily") {
+        // Generate all days in the year
+        const yearStart = new Date(currentYear, 0, 1); // January 1
+        const yearEnd = new Date(currentYear, 11, 31); // December 31
+        currentInterval = new Date(yearStart);
+        
+        while (currentInterval <= yearEnd) {
+          const intervalKey = getIntervalKey(currentInterval, selectedInterval);
+          if (!allIntervals.includes(intervalKey)) {
+            allIntervals.push(intervalKey);
+          }
+          currentInterval.setDate(currentInterval.getDate() + 1);
+        }
+      }
+      
+      // Create data points for all intervals in the year
+      const data: ChartDataPoint[] = allIntervals.map((intervalKey, index) => {
+        const [year, month, day] = intervalKey.split('-').map(Number);
+        const dateObj = new Date(year, month - 1, day);
+        
+        // Determine label based on interval type
+        let monthLabel = '';
+        if (selectedInterval === "Monthly") {
+          monthLabel = formatMonth(month - 1);
+        } else if (selectedInterval === "Weekly") {
+          // Show month label for first week of month
+          if (index === 0) {
+            monthLabel = formatMonth(month - 1);
+          } else {
+            const prevIntervalKey = allIntervals[index - 1];
+            const [prevYear, prevMonth] = prevIntervalKey.split('-').map(Number);
+            if (prevMonth !== month || prevYear !== year) {
+              monthLabel = formatMonth(month - 1);
+            }
+          }
+        } else if (selectedInterval === "Daily") {
+          // Show month label for first day of month
+          if (day === 1) {
+            monthLabel = formatMonth(month - 1);
+          } else if (index > 0) {
+            const prevIntervalKey = allIntervals[index - 1];
+            const [prevYear, prevMonth, prevDay] = prevIntervalKey.split('-').map(Number);
+            if (prevMonth !== month || prevYear !== year) {
+              monthLabel = formatMonth(month - 1);
+            }
+          }
+        }
+        
+        return {
+          date: intervalKey,
+          minutes: eventsByInterval.get(intervalKey) || 0,
+          dateObj,
+          monthLabel,
+        };
+      });
+
+      return data;
+    }
+    
+    // Find the date range (for non-Year filters)
     const allDates = events.map(e => e.start);
     if (allDates.length === 0) return [];
     
@@ -183,7 +273,7 @@ export function TimeLoggedChart({ events, title = "Time Logged" }: TimeLoggedCha
     });
 
     return data;
-  }, [events, selectedInterval]);
+  }, [events, selectedInterval, selectedFilter, currentYear]);
 
   // Calculate number of unique months
   const uniqueMonths = useMemo(() => {

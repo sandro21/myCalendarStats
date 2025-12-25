@@ -1,7 +1,9 @@
 "use client";
 
-import { Upload, Filter, Search } from "lucide-react";
+import { Upload, Filter } from "lucide-react";
 import { useFilter } from "@/contexts/FilterContext";
+import { ActivitySearch } from "@/components/ActivitySearch";
+import { useEvents } from "@/contexts/EventsContext";
 
 export function GlobalFilterBar() {
   const {
@@ -14,6 +16,8 @@ export function GlobalFilterBar() {
     minDate,
     maxDate,
   } = useFilter();
+
+  const { events } = useEvents();
 
   const now = new Date();
   const currentYearValue = now.getFullYear();
@@ -192,10 +196,7 @@ export function GlobalFilterBar() {
 
       {/* Right: Search Activity */}
       <div className="flex-1 flex items-start justify-end">
-        <div className="bg-white px-4 py-2 rounded-full flex items-center gap-2 cursor-pointer">
-          <Search size={18} className="text-black" />
-          <span className="text-body-24 text-black">Search an activity</span>
-        </div>
+        <ActivitySearch events={events} />
       </div>
     </div>
   );

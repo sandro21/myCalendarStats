@@ -137,9 +137,16 @@ export function ActivityPageClient({ events, searchString, timeFilter }: Activit
     <>
       {/* Section 1 Header */}
       <section>
-        <h2 className="text-section-header text-black">
-          Viewing <span className="font-bold italic">{activityStats.name}</span> Statistics <span className="font-bold italic text-[color:var(--red-1)]">{getDateRangeDisplay()}</span>
-        </h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-section-header text-black font-bold italic">
+            {activityStats.name}
+          </h2>
+          {firstSessionEvent && lastSessionEvent && (
+            <span className="text-section-header text-[color:var(--gray)]">
+              {formatDate(firstSessionEvent.start)} - {formatDate(lastSessionEvent.start)}
+            </span>
+          )}
+        </div>
 
         {/* grid of cards */}
         <div className="grid grid-cols-[.9fr_1.1fr_3fr] auto-rows-[200px] gap-3">

@@ -3,6 +3,8 @@ import { Urbanist } from "next/font/google";
 import "./globals.css";
 import { GlobalFilterBar } from "@/components/GlobalFilterBar";
 import { FilterProvider } from "@/contexts/FilterContext";
+import { EventsProvider } from "@/contexts/EventsContext";
+import { loadLocalCalendars } from "@/lib/calculations/load-local-calendars";
 
 const urbanist = Urbanist({
   subsets: ["latin"],
@@ -19,16 +21,24 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Load events server-side (same sources as pages)
+  const events = loadLocalCalendars([
+    { id: "fitness", fileName: "fitness.ics" },
+    { id: "career", fileName: "career.ics" },
+  ]);
+
   return (
     <html lang="en">
       <body className={`${urbanist.className} antialiased`}>
         <FilterProvider>
-          <div className="min-h-screen bg-[color:var(--page-bg)] bg-blobs">
-            <div className="mx-auto px-18 py-12">
-              <GlobalFilterBar />
+          <EventsProvider events={events}>
+            <div className="min-h-screen bg-[color:var(--page-bg)] bg-blobs">
+              <div className="mx-auto px-18 py-12">
+                <GlobalFilterBar />
+              </div>
+              {children}
             </div>
-            {children}
-          </div>
+          </EventsProvider>
         </FilterProvider>
       </body>
     </html>

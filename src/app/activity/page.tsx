@@ -2,10 +2,13 @@ import { loadLocalCalendars } from "@/lib/calculations/load-local-calendars";
 import { ActivityPageClient } from "@/components/ActivityPageClient";
 import { FilterInitializer } from "@/components/FilterInitializer";
 
-export default function ActivityPage() {
-  // For now, using a placeholder activity name
-  // Later this will come from URL params or search
-  const searchString = "workout"; // Placeholder
+interface ActivityPageProps {
+  searchParams: Promise<{ search?: string }>;
+}
+
+export default async function ActivityPage({ searchParams }: ActivityPageProps) {
+  const params = await searchParams;
+  const searchString = params.search || "workout"; // Default to "workout" if no search param
   const timeFilter = "All Time"; // Placeholder
   
   const events = loadLocalCalendars([
