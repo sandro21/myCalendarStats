@@ -57,10 +57,22 @@ export function ActivityPageClient({ events, searchString, timeFilter }: Activit
   } = useFilter();
 
 
-  // Filter events by activity name first
-  const activityFilteredEvents = events.filter((event) =>
-    event.title.toLowerCase().includes(searchString.toLowerCase())
+  // Determine if this is an exact match (object search) or substring search
+  const allUniqueActivities = Array.from(new Set(events.map(e => e.title)));
+  const isExactMatch = allUniqueActivities.some(
+    activity => activity.toLowerCase().trim() === searchString.toLowerCase().trim()
   );
+  
+  // Filter events: exact match for object search, substring for string search
+  const activityFilteredEvents = events.filter((event) => {
+    if (isExactMatch) {
+      // Exact match (object search) - only match this exact activity name
+      return event.title.toLowerCase().trim() === searchString.toLowerCase().trim();
+    } else {
+      // Substring search (string search) - match any activity containing the search string
+      return event.title.toLowerCase().includes(searchString.toLowerCase().trim());
+    }
+  });
 
   // Then filter by time range
   const filteredEvents = filterEventsByTimeRange(
@@ -72,7 +84,9 @@ export function ActivityPageClient({ events, searchString, timeFilter }: Activit
     maxDate
   );
 
-  const activityStats = computeActivityStats(filteredEvents, searchString);
+  // Pass the display name (with or without quotes) to stats
+  const displayName = isExactMatch ? searchString : `"${searchString}"`;
+  const activityStats = computeActivityStats(filteredEvents, displayName);
 
   // Format date range for header
   const getDateRangeDisplay = () => {
@@ -86,9 +100,11 @@ export function ActivityPageClient({ events, searchString, timeFilter }: Activit
 
   // Calculate days for parentheses
   const totalDays = Math.floor(activityStats.totalMinutes / (24 * 60));
-  const remainingMinutes = activityStats.totalMinutes % (24 * 60);
-  const totalHours = Math.floor(remainingMinutes / 60);
-  const minutes = remainingMinutes % 60;
+  
+  // Calculate total hours and minutes (not remaining after days)
+  // This matches the dashboard table which shows total hours/minutes
+  const totalHours = Math.floor(activityStats.totalMinutes / 60);
+  const minutes = activityStats.totalMinutes % 60;
   
   const timeHoursMinutesFormatted = totalHours > 0 
     ? `${totalHours} Hour${totalHours !== 1 ? "s" : ""}, ${minutes} Minute${minutes !== 1 ? "s" : ""}`
@@ -102,32 +118,42 @@ export function ActivityPageClient({ events, searchString, timeFilter }: Activit
   const lastSessionEvent = sortedFilteredEvents[sortedFilteredEvents.length - 1] || null;
 
   // Calculate daily and weekly averages
+  // Daily average should be based on unique days with events, not total day range
   const calculateDailyAverage = () => {
-    if (!firstSessionEvent || !lastSessionEvent || activityStats.totalMinutes === 0) {
+    if (filteredEvents.length === 0 || activityStats.totalMinutes === 0) {
       return 0;
     }
-    const firstDate = new Date(firstSessionEvent.start);
-    const lastDate = new Date(lastSessionEvent.start);
-    firstDate.setHours(0, 0, 0, 0);
-    lastDate.setHours(0, 0, 0, 0);
     
-    const daysDiff = Math.ceil((lastDate.getTime() - firstDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-    return Math.round(activityStats.totalMinutes / daysDiff);
+    // Count unique days that have events
+    const uniqueDays = new Set(filteredEvents.map(event => event.dayString));
+    const daysWithEvents = uniqueDays.size;
+    
+    if (daysWithEvents === 0) return 0;
+    
+    return Math.round(activityStats.totalMinutes / daysWithEvents);
   };
 
   const calculateWeeklyAverage = () => {
-    if (!firstSessionEvent || !lastSessionEvent || activityStats.totalMinutes === 0) {
+    if (filteredEvents.length === 0 || activityStats.totalMinutes === 0) {
       return 0;
     }
-    const firstDate = new Date(firstSessionEvent.start);
-    const lastDate = new Date(lastSessionEvent.start);
-    firstDate.setHours(0, 0, 0, 0);
-    lastDate.setHours(0, 0, 0, 0);
     
-    const daysDiff = Math.ceil((lastDate.getTime() - firstDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-    const weeksDiff = Math.ceil(daysDiff / 7);
+    // Count unique weeks that have events
+    const getWeekKey = (date: Date): string => {
+      const d = new Date(date);
+      d.setHours(0, 0, 0, 0);
+      const day = d.getDay();
+      const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Monday
+      const monday = new Date(d.setDate(diff));
+      return `${monday.getFullYear()}-${String(monday.getMonth() + 1).padStart(2, '0')}-${String(monday.getDate()).padStart(2, '0')}`;
+    };
     
-    return Math.round(activityStats.totalMinutes / weeksDiff);
+    const uniqueWeeks = new Set(filteredEvents.map(event => getWeekKey(event.start)));
+    const weeksWithEvents = uniqueWeeks.size;
+    
+    if (weeksWithEvents === 0) return 0;
+    
+    return Math.round(activityStats.totalMinutes / weeksWithEvents);
   };
 
   const dailyAverage = calculateDailyAverage();
