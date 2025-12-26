@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Urbanist } from "next/font/google";
 import "./globals.css";
 import { GlobalFilterBar } from "@/components/GlobalFilterBar";
+import { Footer } from "@/components/Footer";
 import { FilterProvider } from "@/contexts/FilterContext";
 import { EventsProvider } from "@/contexts/EventsContext";
 
@@ -25,11 +26,14 @@ export default function RootLayout({
       <body className={`${urbanist.className} antialiased`}>
         <FilterProvider>
           <EventsProvider>
-            <div className="min-h-screen bg-[color:var(--page-bg)] bg-blobs">
+            <div className="min-h-screen bg-[color:var(--page-bg)] bg-blobs flex flex-col">
               <div className="mx-auto px-18 py-12">
                 <GlobalFilterBar />
               </div>
-              {children}
+              <div className="flex-1">
+                {children}
+              </div>
+              <Footer />
             </div>
           </EventsProvider>
         </FilterProvider>
