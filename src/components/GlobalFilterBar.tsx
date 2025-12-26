@@ -33,6 +33,7 @@ export function GlobalFilterBar() {
       localStorage.removeItem('uploadedCalendars');
       localStorage.removeItem('activityTitleMappings');
       localStorage.removeItem('removedEventIds');
+      localStorage.removeItem('googleCalendarEvents');
       
       // Refresh events context (will be empty now)
       refreshEvents();
@@ -140,10 +141,15 @@ export function GlobalFilterBar() {
     return false;
   };
 
+  const handleCleanData = () => {
+    // Load existing events and go to processing page
+    router.push('/process');
+  };
+
   return (
     <div className="max-w-full h-[50px] flex items-start">
-      {/* Left: Clear Data Button */}
-      <div className="flex-1 flex items-start justify-start">
+      {/* Left: Clear Data & Clean Data Buttons */}
+      <div className="flex-1 flex items-start justify-start gap-3">
         <button
           onClick={handleClearData}
           className="px-4 py-2 rounded-full text-body-24 font-medium cursor-pointer flex items-center gap-2"
@@ -154,6 +160,16 @@ export function GlobalFilterBar() {
         >
           <Trash2 size={18} />
           Clear Data
+        </button>
+        <button
+          onClick={handleCleanData}
+          className="px-4 py-2 rounded-full text-body-24 font-medium cursor-pointer flex items-center gap-2 bg-white border-2"
+          style={{
+            borderColor: 'var(--red-1)',
+            color: 'var(--red-1)',
+          }}
+        >
+          Clean Data
         </button>
       </div>
 

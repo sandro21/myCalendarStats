@@ -42,10 +42,11 @@ function formatDateTime(date: Date): string {
 interface ActivityPageClientProps {
   events: CalendarEvent[];
   searchString: string;
+  searchType: string;
   timeFilter: string;
 }
 
-export function ActivityPageClient({ events, searchString, timeFilter }: ActivityPageClientProps) {
+export function ActivityPageClient({ events, searchString, searchType, timeFilter }: ActivityPageClientProps) {
   const {
     selectedFilter,
     currentYear,
@@ -57,16 +58,13 @@ export function ActivityPageClient({ events, searchString, timeFilter }: Activit
   } = useFilter();
 
 
-  // Determine if this is an exact match (object search) or substring search
-  const allUniqueActivities = Array.from(new Set(events.map(e => e.title)));
-  const isExactMatch = allUniqueActivities.some(
-    activity => activity.toLowerCase().trim() === searchString.toLowerCase().trim()
-  );
+  // Determine search mode based on searchType parameter
+  const isExactMatch = searchType === "event";
   
-  // Filter events: exact match for object search, substring for string search
+  // Filter events: exact match for event search, substring for string search
   const activityFilteredEvents = events.filter((event) => {
     if (isExactMatch) {
-      // Exact match (object search) - only match this exact activity name
+      // Exact match (event search) - only match this exact activity name
       return event.title.toLowerCase().trim() === searchString.toLowerCase().trim();
     } else {
       // Substring search (string search) - match any activity containing the search string

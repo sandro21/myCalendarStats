@@ -109,7 +109,7 @@ export function DashboardClient({ events }: DashboardClientProps) {
                       const rowColor = colors[index] || 'text-[#F97316]';
                       
                       const handleActivityClick = () => {
-                        router.push(`/activity?search=${encodeURIComponent(activity.name)}`);
+                        router.push(`/activity?search=${encodeURIComponent(activity.name)}&type=event`);
                       };
                       
                       return (

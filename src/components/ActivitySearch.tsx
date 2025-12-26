@@ -78,14 +78,16 @@ export function ActivitySearch({ events }: ActivitySearchProps) {
   const handleActivitySelect = (activityName: string) => {
     setSearchTerm(activityName); // Keep the activity name in the search bar
     setIsOpen(false);
-    router.push(`/activity?search=${encodeURIComponent(activityName)}`);
+    // Event search - exact match
+    router.push(`/activity?search=${encodeURIComponent(activityName)}&type=event`);
   };
 
   const handleSearch = (searchValue: string) => {
     if (searchValue.trim().length >= 1) {
       setSearchTerm(searchValue.trim()); // Keep the search term in the search bar
       setIsOpen(false);
-      router.push(`/activity?search=${encodeURIComponent(searchValue.trim())}`);
+      // String search - substring matching
+      router.push(`/activity?search=${encodeURIComponent(searchValue.trim())}&type=string`);
     }
   };
 

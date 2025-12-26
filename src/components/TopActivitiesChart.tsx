@@ -82,11 +82,46 @@ export function TopActivitiesChart({ events, topActivities }: TopActivitiesChart
       return `${year}-${month}-${day}`;
     };
 
-    // Get all unique week keys across all events
-    const allWeekKeys = new Set<string>();
-    filteredEvents.forEach((event) => {
-      allWeekKeys.add(getWeekKey(event.start));
-    });
+    // Sort events by date
+    const sortedEvents = [...filteredEvents].sort((a, b) => a.start.getTime() - b.start.getTime());
+    
+    // Find the first "meaningful" start date:
+    // There must be at least 2 events within a 6-month span
+    let meaningfulStartDate = sortedEvents[0].start;
+    const sixMonthsMs = 6 * 30 * 24 * 60 * 60 * 1000; // Approximately 6 months in milliseconds
+    
+    for (let i = 0; i < sortedEvents.length - 1; i++) {
+      const currentEventTime = sortedEvents[i].start.getTime();
+      const nextEventTime = sortedEvents[i + 1].start.getTime();
+      
+      // Check if next event is within 6 months
+      if (nextEventTime - currentEventTime <= sixMonthsMs) {
+        meaningfulStartDate = sortedEvents[i].start;
+        break;
+      }
+    }
+    
+    // Generate ALL weeks from meaningful start to last event (or today)
+    const minDate = meaningfulStartDate;
+    const maxDate = new Date(Math.min(today.getTime(), Math.max(...filteredEvents.map(e => e.start.getTime()))));
+    
+    // Get week start for min and max dates
+    const startWeek = getWeekStart(minDate);
+    const endWeek = getWeekStart(maxDate);
+    
+    // Generate all week keys from start to end
+    const allWeekKeys: string[] = [];
+    const currentWeek = new Date(startWeek);
+    
+    while (currentWeek <= endWeek) {
+      const year = currentWeek.getFullYear();
+      const month = String(currentWeek.getMonth() + 1).padStart(2, "0");
+      const day = String(currentWeek.getDate()).padStart(2, "0");
+      allWeekKeys.push(`${year}-${month}-${day}`);
+      
+      // Move to next week (add 7 days)
+      currentWeek.setDate(currentWeek.getDate() + 7);
+    }
 
     // Group events by activity name
     const eventsByActivity = new Map<string, CalendarEvent[]>();
@@ -113,14 +148,13 @@ export function TopActivitiesChart({ events, topActivities }: TopActivitiesChart
     });
 
     // Create data points for all weeks, with minutes for each activity
-    const sortedWeeks = Array.from(allWeekKeys).sort();
-    const data = sortedWeeks.map((weekKey, index) => {
+    const data = allWeekKeys.map((weekKey, index) => {
       const [year, month, day] = weekKey.split('-').map(Number);
       const dateObj = new Date(year, month - 1, day);
       
       // Check if this is first week of month
       const isFirstWeekOfMonth = index === 0 || (() => {
-        const prevWeekKey = sortedWeeks[index - 1];
+        const prevWeekKey = allWeekKeys[index - 1];
         const [prevYear, prevMonth] = prevWeekKey.split('-').map(Number);
         return prevMonth !== month || prevYear !== year;
       })();
