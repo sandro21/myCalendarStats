@@ -27,3 +27,4 @@ export function ActivitySearchWrapper({ events }: ActivitySearchWrapperProps) {
   );
 }
 
+

@@ -51,3 +51,4 @@ console.log('Last event:', workoutEvents[workoutEvents.length - 1]?.start.toISOS
 
 
 
+
