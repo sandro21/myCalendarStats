@@ -177,7 +177,7 @@ export function ActivityPageClient({ events, searchString, searchType, timeFilte
           {/* 1. Top left - Total Count (spans 1 col) */}
           <div className="card-soft">
             <h3 className="text-card-title">Total Count</h3>
-            <div className="text-number-large text-[color:var(--red-1)]">
+            <div className="text-number-large text-[color:var(--primary)]">
               {activityStats.totalCount}
             </div>
           </div>
@@ -185,7 +185,7 @@ export function ActivityPageClient({ events, searchString, searchType, timeFilte
           {/* 2. Top middle - Time Logged (spans 1 col) */}
           <div className="card-soft px-8">
             <h3 className="text-card-title mb-2">Time Logged</h3>
-            <p className="text-body-24 text-[color:var(--red-1)]">
+            <p className="text-body-24 text-[color:var(--primary)]">
               {timeHoursMinutesFormatted}
             </p>
             {totalDays > 0 && (
@@ -205,7 +205,7 @@ export function ActivityPageClient({ events, searchString, searchType, timeFilte
           {/* 4. Bottom - Daily Average */}
           <div className="card-soft flex flex-col items-center justify-center text-center px-6">
             <h3 className="text-card-title text-black">Daily Average</h3>
-            <div className="mt-4 text-number-large text-[color:var(--red-1)]">
+            <div className="mt-4 text-number-large text-[color:var(--primary)]">
               {formatAsCompactHoursMinutes(dailyAverage)}
             </div>
           </div>
@@ -213,7 +213,7 @@ export function ActivityPageClient({ events, searchString, searchType, timeFilte
           {/* 5. Bottom - Weekly Average */}
           <div className="card-soft flex flex-col items-center justify-center text-center px-6">
             <h3 className="text-card-title text-black">Weekly Average</h3>
-            <div className="mt-4 text-number-large text-[color:var(--red-1)]">
+            <div className="mt-4 text-number-large text-[color:var(--primary)]">
               {formatAsCompactHoursMinutes(weeklyAverage)}
             </div>
           </div>
@@ -239,7 +239,7 @@ export function ActivityPageClient({ events, searchString, searchType, timeFilte
           {/* 2. Average (spans 1 col, 1 row, middle column) */}
           <div className="card-soft">
             <h3 className="text-card-title">Average</h3>
-            <div className="text-number-medium text-[color:var(--red-1)]">
+            <div className="text-number-medium text-[color:var(--primary)]">
               {formatAsCompactHoursMinutes(activityStats.averageSessionMinutes)}
             </div>
           </div>
@@ -255,7 +255,7 @@ export function ActivityPageClient({ events, searchString, searchType, timeFilte
           {/* 4. Longest (spans 1 col, 1 row, middle column, under Average) */}
           <div className="card-soft gap-0">
             <h3 className="text-card-title">Longest</h3>
-            <div className="text-number-medium text-[color:var(--red-1)]">
+            <div className="text-number-medium text-[color:var(--primary)]">
               {activityStats.longestSession 
                 ? formatAsCompactHoursMinutes(activityStats.longestSession.minutes)
                 : "N/A"}
@@ -286,7 +286,7 @@ export function ActivityPageClient({ events, searchString, searchType, timeFilte
             {/* Longest Streak */}
             <div className="card-soft">
               <h3 className="text-card-title">Longest Streak</h3>
-              <div className="text-number-medium text-[color:var(--red-1)]">
+              <div className="text-number-medium text-[color:var(--primary)]">
                 {activityStats.longestStreak 
                   ? `${activityStats.longestStreak.days} days`
                   : "N/A"}
@@ -301,7 +301,7 @@ export function ActivityPageClient({ events, searchString, searchType, timeFilte
             {/* Biggest Break */}
             <div className="card-soft">
               <h3 className="text-card-title">Biggest Break</h3>
-              <div className="text-number-medium text-[color:var(--red-1)]">
+              <div className="text-number-medium text-[color:var(--primary)]">
                 {activityStats.biggestBreak 
                   ? `${activityStats.biggestBreak.days} days`
                   : "N/A"}

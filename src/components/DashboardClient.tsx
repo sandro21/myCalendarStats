@@ -94,19 +94,20 @@ export function DashboardClient({ events }: DashboardClientProps) {
 
                   <tbody>
                     {topActivities.map((activity, index) => {
-                      const colors = [
-                        'text-[#DB1E18]', // Red
-                        'text-[#3B82F6]', // Blue
-                        'text-[#10B981]', // Green
-                        'text-[#A855F7]', // Purple
-                        'text-[#F97316]', // Orange
-                        'text-[#EC4899]', // Pink
-                        'text-[#14B8A6]', // Teal
-                        'text-[#F59E0B]', // Amber
-                        'text-[#8B5CF6]', // Violet
-                        'text-[#EF4444]', // Light Red
+                      const colorVars = [
+                        '--chart-color-1',
+                        '--chart-color-2',
+                        '--chart-color-3',
+                        '--chart-color-4',
+                        '--chart-color-5',
+                        '--chart-color-6',
+                        '--chart-color-7',
+                        '--chart-color-8',
+                        '--chart-color-9',
+                        '--chart-color-10',
                       ];
-                      const rowColor = colors[index] || 'text-[#F97316]';
+                      const colorVar = colorVars[index] || '--chart-color-5';
+                      const rowColorStyle = { color: `var(${colorVar})` };
                       
                       const handleActivityClick = () => {
                         router.push(`/activity?search=${encodeURIComponent(activity.name)}&type=event`);
@@ -118,19 +119,19 @@ export function DashboardClient({ events }: DashboardClientProps) {
                           onClick={handleActivityClick}
                           className="text-body-24 border-b border-[color:var(--gray)]/10 last:border-0 text-left cursor-pointer hover:bg-gray-50 transition-colors"
                         >
-                          <td className={`py-2 text-body-24 font-semibold pr-4 truncate text-left ${rowColor}`} title={activity.name}>
+                          <td className="py-2 text-body-24 font-semibold pr-4 truncate text-left" style={rowColorStyle} title={activity.name}>
                             {index + 1}. {activity.name}
                           </td>
-                          <td className={`py-2 text-body-24 text-left ${rowColor}`}>
+                          <td className="py-2 text-body-24 text-left" style={rowColorStyle}>
                             {formatAsCompactHoursMinutes(activity.totalMinutes)}
                           </td>
-                          <td className={`py-2 text-body-24 text-left ${rowColor}`}>
+                          <td className="py-2 text-body-24 text-left" style={rowColorStyle}>
                             {activity.count}
                           </td>
-                          <td className={`py-2 text-body-24 text-left ${rowColor}`}>
+                          <td className="py-2 text-body-24 text-left" style={rowColorStyle}>
                             {formatAsCompactHoursMinutes(activity.averageSessionMinutes)}
                           </td>
-                          <td className={`py-2 text-body-24 text-left ${rowColor}`}>
+                          <td className="py-2 text-body-24 text-left" style={rowColorStyle}>
                             {formatAsCompactHoursMinutes(activity.longestSessionMinutes)}
                           </td>
                         </tr>
@@ -167,7 +168,7 @@ export function DashboardClient({ events }: DashboardClientProps) {
             {/* Total Activities */}
             <div className="card-soft flex flex-col items-center justify-center text-center px-6">
               <h3 className="text-card-title text-black">Total Activities</h3>
-              <div className="mt-4 text-number-large text-[color:var(--red-1)]">
+              <div className="mt-4 text-number-large text-[color:var(--primary)]">
                 {stats.totalCount}
               </div>
             </div>
@@ -175,7 +176,7 @@ export function DashboardClient({ events }: DashboardClientProps) {
             {/* Different Activities */}
             <div className="card-soft flex flex-col items-center justify-center text-center px-6">
               <h3 className="text-card-title text-black">Different Activities</h3>
-              <div className="mt-4 text-number-large text-[color:var(--red-1)]">
+              <div className="mt-4 text-number-large text-[color:var(--primary)]">
                 {stats.uniqueActivities}
               </div>
             </div>
@@ -190,10 +191,10 @@ export function DashboardClient({ events }: DashboardClientProps) {
             {/* Time Logged */}
             <div className="card-soft col-span-2 flex flex-col items-center justify-center text-center px-8">
               <h3 className="text-card-title text-black mb-2">Time Logged</h3>
-              <p className="text-body-24 text-[color:var(--red-1)]">
+              <p className="text-body-24 text-[color:var(--primary)]">
                 {timeDaysHoursMinutes}
               </p>
-              <p className="text-body-24 text-[color:var(--red-2)]">
+              <p className="text-body-24 text-[color:var(--primary)]">
                 {timeHoursMinutes}
               </p>
               <p className="text-body-24 text-black">

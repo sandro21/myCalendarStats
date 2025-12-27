@@ -279,16 +279,16 @@ export function ProcessCalendarClient({ events: contextEvents }: ProcessCalendar
           
           <span className="text-2xl text-[color:var(--gray)]">→</span>
           
-          <div className="bg-white border-2 border-[color:var(--red-1)] rounded-lg px-6 py-3">
-            <p className="text-sm text-[color:var(--red-1)] mb-1">After</p>
+          <div className="bg-white border-2 border-[color:var(--primary)] rounded-lg px-6 py-3">
+            <p className="text-sm text-[color:var(--primary)] mb-1">After</p>
             <div className="flex gap-4">
               <div>
                 <p className="text-xs text-[color:var(--gray)]">Events</p>
-                <p className="text-xl font-bold text-[color:var(--red-1)]">{processedEvents.length}</p>
+                <p className="text-xl font-bold text-[color:var(--primary)]">{processedEvents.length}</p>
               </div>
               <div>
                 <p className="text-xs text-[color:var(--gray)]">Activities</p>
-                <p className="text-xl font-bold text-[color:var(--red-1)]">{processedStats?.uniqueActivities || 0}</p>
+                <p className="text-xl font-bold text-[color:var(--primary)]">{processedStats?.uniqueActivities || 0}</p>
               </div>
             </div>
           </div>
@@ -301,7 +301,7 @@ export function ProcessCalendarClient({ events: contextEvents }: ProcessCalendar
           onClick={() => setCurrentStep("suggestions")}
           className={`px-6 py-2 rounded-full text-body-24 ${
             currentStep === "suggestions"
-              ? "bg-[color:var(--red-1)] text-white"
+              ? "bg-[color:var(--primary)] text-white"
               : "bg-gray-200 text-black"
           }`}
         >
@@ -311,7 +311,7 @@ export function ProcessCalendarClient({ events: contextEvents }: ProcessCalendar
           onClick={() => setCurrentStep("quality")}
           className={`px-6 py-2 rounded-full text-body-24 ${
             currentStep === "quality"
-              ? "bg-[color:var(--red-1)] text-white"
+              ? "bg-[color:var(--primary)] text-white"
               : "bg-gray-200 text-black"
           }`}
         >
@@ -320,7 +320,7 @@ export function ProcessCalendarClient({ events: contextEvents }: ProcessCalendar
         <button
           onClick={appliedMerges.size > 0 || removedEventIds.size > 0 ? handleSaveAndContinue : handleSkip}
           disabled={isProcessing}
-          className="px-6 py-2 rounded-full text-body-24 bg-[color:var(--red-1)] text-white disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-6 py-2 rounded-full text-body-24 bg-[color:var(--primary)] text-white disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isProcessing ? "Processing..." : "Done"}
         </button>
@@ -405,7 +405,7 @@ function MergeSuggestionsStep({
             <div
               key={index}
               className={`border-2 rounded-lg p-4 ${
-                applied ? "border-green-500 bg-green-50" : "border-gray-300"
+                applied ? "border-[color:var(--color-success-border)] bg-[color:var(--color-success-light)]" : "border-gray-300"
               }`}
             >
               <div className="flex items-start justify-between mb-3">
@@ -441,7 +441,7 @@ function MergeSuggestionsStep({
                       />
                       <button
                         onClick={() => handleSaveEdit(suggestion)}
-                        className="px-4 py-2 bg-[color:var(--red-1)] text-white rounded-lg text-sm"
+                        className="px-4 py-2 bg-[color:var(--primary)] text-white rounded-lg text-sm"
                       >
                         Save
                       </button>
@@ -467,7 +467,7 @@ function MergeSuggestionsStep({
                           </button>
                           <button
                             onClick={() => onApply(suggestion, suggestion.suggestedName)}
-                            className="px-4 py-2 bg-[color:var(--red-1)] text-white rounded-lg text-sm"
+                            className="px-4 py-2 bg-[color:var(--primary)] text-white rounded-lg text-sm"
                           >
                             Apply Merge
                           </button>
@@ -480,7 +480,7 @@ function MergeSuggestionsStep({
                         </>
                       )}
                       {applied && (
-                        <span className="text-sm text-green-600 font-semibold">Applied</span>
+                        <span className="text-sm text-[color:var(--color-success)] font-semibold">Applied</span>
                       )}
                     </div>
                   )}
@@ -541,7 +541,7 @@ function DataQualityStep({
         {issues.length > 0 && (
           <button
             onClick={handleRemoveAll}
-            className="px-5 py-2 bg-[color:var(--red-1)] text-white rounded-full text-sm font-semibold hover:opacity-90 transition-opacity whitespace-nowrap"
+            className="px-5 py-2 bg-[color:var(--primary)] text-white rounded-full text-sm font-semibold hover:opacity-90 transition-opacity whitespace-nowrap"
             type="button"
           >
             Remove All
@@ -551,7 +551,7 @@ function DataQualityStep({
 
       {groupedIssues.error.length > 0 && (
         <div className="space-y-4">
-          <h3 className="text-xl font-semibold text-red-600">Errors ({groupedIssues.error.length})</h3>
+          <h3 className="text-xl font-semibold text-[color:var(--color-error)]">Errors ({groupedIssues.error.length})</h3>
           {groupedIssues.error.map((issue, index) => (
             <IssueCard key={index} issue={issue} onRemove={onRemove} onKeep={onKeep} />
           ))}
@@ -585,7 +585,7 @@ function IssueCard({
       return "border-purple-300 bg-purple-50";
     }
     if (issue.severity === "error") {
-      return "border-red-300 bg-red-50";
+      return "border-[color:var(--color-error-border)] bg-[color:var(--color-error-light)]";
     }
     return "border-orange-300 bg-orange-50";
   };
@@ -603,7 +603,7 @@ function IssueCard({
   };
 
   return (
-    <div className="border-2 rounded-lg p-4 border-red-200 bg-red-50">
+    <div className="border-2 rounded-lg p-4 border-[color:var(--color-error-border)] bg-[color:var(--color-error-light)]">
       <div className="flex items-start justify-between text-left">
         <div className="flex-1">
           <div className="flex items-start gap-2 mb-1">
@@ -626,7 +626,7 @@ function IssueCard({
           </button>
           <button
             onClick={() => onRemove(issue)}
-            className="px-4 py-2 bg-[color:var(--red-1)] text-white rounded-full text-sm hover:opacity-90 transition-opacity"
+            className="px-4 py-2 bg-[color:var(--primary)] text-white rounded-full text-sm hover:opacity-90 transition-opacity"
           >
             Remove
           </button>
@@ -688,7 +688,7 @@ function PreviewStep({
             <p className="text-body-24">
               <span className="font-semibold">Events:</span> {processedCount}
               {changes.events !== 0 && (
-                <span className={`ml-2 ${changes.events < 0 ? "text-red-600" : "text-green-600"}`}>
+                <span className={`ml-2 ${changes.events < 0 ? "text-[color:var(--color-error)]" : "text-[color:var(--color-success)]"}`}>
                   ({changes.events > 0 ? "+" : ""}{changes.events})
                 </span>
               )}
@@ -696,7 +696,7 @@ function PreviewStep({
             <p className="text-body-24">
               <span className="font-semibold">Activities:</span> {processedStats.uniqueActivities}
               {changes.activities !== 0 && (
-                <span className={`ml-2 ${changes.activities < 0 ? "text-red-600" : "text-green-600"}`}>
+                <span className={`ml-2 ${changes.activities < 0 ? "text-[color:var(--color-error)]" : "text-[color:var(--color-success)]"}`}>
                   ({changes.activities > 0 ? "+" : ""}{changes.activities})
                 </span>
               )}
@@ -704,7 +704,7 @@ function PreviewStep({
             <p className="text-body-24">
               <span className="font-semibold">Total Time:</span> {formatAsDaysHoursMinutes(processedStats.totalMinutes)}
               {changes.time !== 0 && (
-                <span className={`ml-2 ${changes.time < 0 ? "text-red-600" : "text-green-600"}`}>
+                <span className={`ml-2 ${changes.time < 0 ? "text-[color:var(--color-error)]" : "text-[color:var(--color-success)]"}`}>
                   ({changes.time > 0 ? "+" : ""}{Math.round(changes.time / 60)}h)
                 </span>
               )}
@@ -717,7 +717,7 @@ function PreviewStep({
         <button
           onClick={onSave}
           disabled={isProcessing}
-          className="w-full px-8 py-4 bg-[color:var(--red-1)] text-white rounded-full text-body-24 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full px-8 py-4 bg-[color:var(--primary)] text-white rounded-full text-body-24 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isProcessing ? "Saving..." : "Save & Continue to Dashboard"}
         </button>

@@ -154,7 +154,7 @@ export function GlobalFilterBar() {
           onClick={handleClearData}
           className="px-4 py-2 rounded-full text-body-24 font-medium cursor-pointer flex items-center gap-2"
           style={{
-            backgroundColor: 'var(--red-1)',
+            backgroundColor: 'var(--primary)',
             color: 'white',
           }}
         >
@@ -163,10 +163,10 @@ export function GlobalFilterBar() {
         </button>
         <button
           onClick={handleCleanData}
-          className="px-4 py-2 rounded-full text-body-24 font-medium cursor-pointer flex items-center gap-2 bg-white border-2"
+          className="px-4 py-2 rounded-full text-body-24 font-medium cursor-pointer flex items-center gap-2 bg-[color:var(--bg-white)] border-2"
           style={{
-            borderColor: 'var(--red-1)',
-            color: 'var(--red-1)',
+            borderColor: 'var(--primary)',
+            color: 'var(--primary)',
           }}
         >
           Clean Data
@@ -191,12 +191,12 @@ export function GlobalFilterBar() {
               onClick={() => setSelectedFilter(filter)}
               className={`px-4 py-2 rounded-full text-body-24 whitespace-nowrap cursor-pointer ${
                 selectedFilter === filter 
-                  ? "font-bold text-black" 
-                  : "font-normal text-black bg-white"
+                  ? "font-bold text-[color:var(--text-primary)]" 
+                  : "font-normal text-[color:var(--text-primary)] bg-[color:var(--bg-white)]"
               }`}
               style={
                 selectedFilter === filter
-                  ? { backgroundColor: 'rgba(219, 30, 24, 0.2)' } // var(--red-1) with 20% opacity
+                  ? { backgroundColor: 'var(--primary-20)' }
                   : undefined
               }
             >
@@ -212,13 +212,13 @@ export function GlobalFilterBar() {
               onClick={() => selectedFilter === "Month" ? handleMonthChange(-1) : handleYearChange(-1)}
               disabled={!canGoBack()}
               className={`text-body-24 cursor-pointer ${
-                canGoBack() ? "text-[color:var(--red-1)]" : "text-gray-400 cursor-not-allowed"
+                canGoBack() ? "text-[color:var(--primary)]" : "text-[color:var(--text-secondary)] cursor-not-allowed opacity-50"
               }`}
             >
               ←
             </button>
-            <div className="bg-white px-4 py-2 rounded-full" style={{ width: '15ch', minWidth: '10ch', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <span className="text-body-24 font-bold text-[color:var(--red-1)] whitespace-nowrap">
+            <div className="bg-[color:var(--bg-white)] px-4 py-2 rounded-full" style={{ width: '15ch', minWidth: '10ch', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <span className="text-body-24 font-bold text-[color:var(--primary)] whitespace-nowrap">
                 {selectedFilter === "Month" 
                   ? `${monthNames[currentMonth]} ${currentYear}`
                   : currentYear
@@ -229,7 +229,7 @@ export function GlobalFilterBar() {
               onClick={() => selectedFilter === "Month" ? handleMonthChange(1) : handleYearChange(1)}
               disabled={!canGoForward()}
               className={`text-body-24 cursor-pointer ${
-                canGoForward() ? "text-[color:var(--red-1)]" : "text-gray-400 cursor-not-allowed"
+                canGoForward() ? "text-[color:var(--primary)]" : "text-[color:var(--text-secondary)] cursor-not-allowed opacity-50"
               }`}
             >
               →

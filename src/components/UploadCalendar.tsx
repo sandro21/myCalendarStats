@@ -222,20 +222,20 @@ export function UploadCalendar({ onUploadComplete }: UploadCalendarProps) {
         <button
           onClick={handleButtonClick}
           disabled={isUploading}
-          className="bg-[color:var(--red-1)] text-white px-8 py-4 rounded-full text-body-24 font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+          className="bg-[color:var(--primary)] text-white px-8 py-4 rounded-full text-body-24 font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
           type="button"
         >
           {isUploading ? "Uploading..." : "Upload iCal"}
         </button>
         
         {error && (
-          <p className="text-red-500 text-sm text-center">{error}</p>
+          <p className="text-[color:var(--color-error)] text-sm text-center">{error}</p>
         )}
         
         <button
           onClick={handleGoogleConnect}
           disabled={isConnectingGoogle}
-          className="bg-white text-black px-8 py-4 rounded-full text-body-24 font-semibold border-2 border-gray-300 hover:border-[color:var(--red-1)] hover:bg-gray-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          className="bg-white text-black px-8 py-4 rounded-full text-body-24 font-semibold border-2 border-gray-300 hover:border-[color:var(--primary)] hover:bg-gray-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           type="button"
         >
           {isConnectingGoogle ? "Connecting..." : "Connect to Google Calendar"}

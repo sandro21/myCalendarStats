@@ -12,24 +12,12 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { formatAsCompactHoursMinutes } from "@/lib/calculations/stats";
+import { getChartColorValue, CHART_COLORS } from "@/lib/colors";
 
 interface TopActivitiesChartProps {
   events: CalendarEvent[];
   topActivities: Array<{ name: string; totalMinutes: number }>;
 }
-
-const COLORS = [
-  "#DB1E18", // Red
-  "#3B82F6", // Blue
-  "#10B981", // Green
-  "#A855F7", // Purple
-  "#F97316", // Orange
-  "#EC4899", // Pink
-  "#14B8A6", // Teal
-  "#F59E0B", // Amber
-  "#8B5CF6", // Violet
-  "#EF4444", // Light Red
-];
 
 export function TopActivitiesChart({ events, topActivities }: TopActivitiesChartProps) {
   const [hoveredData, setHoveredData] = useState<Record<string, number> | null>(null);
@@ -40,6 +28,22 @@ export function TopActivitiesChart({ events, topActivities }: TopActivitiesChart
   const hoveredDataPointRef = useRef<Record<string, any> | null>(null);
   const tooltipPositionRef = useRef<{ x: number; y: number } | null>(null);
   const updateTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Get chart colors from CSS variables
+  const colors = useMemo(() => {
+    return CHART_COLORS.slice(0, 10).map((_, index) => {
+      const value = getChartColorValue(index);
+      // Fallback to actual CSS values if not available (SSR)
+      if (!value) {
+        const fallbacks = [
+          "#a43c38", "#3B82F6", "#10B981", "#A855F7", "#F97316",
+          "#EC4899", "#14B8A6", "#F59E0B", "#8B5CF6", "#EF4444"
+        ];
+        return fallbacks[index] || fallbacks[0];
+      }
+      return value;
+    });
+  }, []);
 
   // Cleanup timeout on unmount
   useEffect(() => {
@@ -338,7 +342,7 @@ export function TopActivitiesChart({ events, topActivities }: TopActivitiesChart
 
   if (chartData.length === 0 || topActivities.length === 0) {
     return (
-      <div className="flex items-center justify-center h-full text-[color:var(--gray)]">
+      <div className="flex items-center justify-center h-full text-[color:var(--text-secondary)]">
         No data available
       </div>
     );
@@ -355,16 +359,16 @@ export function TopActivitiesChart({ events, topActivities }: TopActivitiesChart
             setHoveredData(null);
           }}
         >
-          <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
           <XAxis
             dataKey="date"
             tickFormatter={formatXAxisLabel}
-            stroke="#3B3C40"
+            stroke="var(--chart-axis)"
             style={{ fontSize: '12px' }}
             height={40}
           />
           <YAxis
-            stroke="#3B3C40"
+            stroke="var(--chart-axis)"
             style={{ fontSize: '12px' }}
             domain={[0, maxValue]}
             tickFormatter={(value) => {
@@ -382,10 +386,10 @@ export function TopActivitiesChart({ events, topActivities }: TopActivitiesChart
               key={activity.name}
               type="monotone"
               dataKey={activity.name}
-              stroke={COLORS[index]}
+              stroke={colors[index] || colors[0]}
               strokeWidth={2}
               dot={false}
-              activeDot={{ r: 5, fill: COLORS[index] }}
+              activeDot={{ r: 5, fill: colors[index] || colors[0] }}
             />
           ))}
         </LineChart>
@@ -394,7 +398,7 @@ export function TopActivitiesChart({ events, topActivities }: TopActivitiesChart
       {/* Floating tooltip positioned at topmost point */}
       {hoveredData && tooltipPosition && (
         <div
-          className="absolute bg-white/70 backdrop-blur-sm border border-gray-200/30 rounded-xl p-3 shadow-lg z-10 pointer-events-none"
+          className="absolute bg-[color:var(--chart-tooltip-bg)] backdrop-blur-sm border border-[color:var(--chart-tooltip-border)] rounded-xl p-3 shadow-lg z-10 pointer-events-none"
           style={{
             left: `${tooltipPosition.x - 250}px`, // Position significantly to the left
             top: `${tooltipPosition.y}px`, // Position follows mouse Y
@@ -404,7 +408,7 @@ export function TopActivitiesChart({ events, topActivities }: TopActivitiesChart
         >
           {/* Month/Year label at top */}
           {hoveredDataPoint?.monthYearLabel && (
-            <div className="text-xs text-[color:var(--gray)] font-medium mb-1">
+            <div className="text-xs text-[color:var(--text-secondary)] font-medium mb-1">
               {hoveredDataPoint.monthYearLabel}
             </div>
           )}
@@ -429,18 +433,20 @@ export function TopActivitiesChart({ events, topActivities }: TopActivitiesChart
                   ? item.name.substring(0, 17) + '...' 
                   : item.name;
                 
+                const itemColor = colors[item.index] || colors[0];
+                
                 return (
                   <div key={item.name} className="flex items-center gap-2">
                     <div
                       className="w-3 h-3 rounded-sm flex-shrink-0"
-                      style={{ backgroundColor: COLORS[item.index] }}
+                      style={{ backgroundColor: itemColor }}
                     />
                     <div className="text-xs">
-                      <span className="font-semibold text-black">
+                      <span className="font-semibold text-[color:var(--text-primary)]">
                         {displayIndex + 1}. {displayName}
                       </span>
                       {' - '}
-                      <span style={{ color: COLORS[item.index] }}>
+                      <span style={{ color: itemColor }}>
                         {formatAsCompactHoursMinutes(item.value)}
                       </span>
                     </div>

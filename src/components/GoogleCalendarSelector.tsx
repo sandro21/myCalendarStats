@@ -111,7 +111,7 @@ export function GoogleCalendarSelector({
                   type="checkbox"
                   checked={selectedIds.has(calendar.id)}
                   onChange={() => toggleCalendar(calendar.id)}
-                  className="w-5 h-5 rounded border-gray-300 text-[color:var(--red-1)] focus:ring-[color:var(--red-1)] cursor-pointer"
+                  className="w-5 h-5 rounded border-gray-300 text-[color:var(--primary)] focus:ring-[color:var(--primary)] cursor-pointer"
                 />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
@@ -124,7 +124,7 @@ export function GoogleCalendarSelector({
                      <span className="font-medium text-black truncate text-lg">
                        {calendar.summary}
                        {calendar.primary && (
-                         <span className="ml-2 text-xs text-[color:var(--red-1)] font-semibold">
+                         <span className="ml-2 text-xs text-[color:var(--primary)] font-semibold">
                            PRIMARY
                          </span>
                        )}
@@ -151,7 +151,7 @@ export function GoogleCalendarSelector({
           <div className="flex gap-2 items-center">
             <button
               onClick={handleSelectAll}
-              className="text-base text-[color:var(--red-1)] hover:underline"
+              className="text-base text-[color:var(--primary)] hover:underline"
               type="button"
             >
               Select All
@@ -176,7 +176,7 @@ export function GoogleCalendarSelector({
             </button>
             <button
               onClick={handleConfirm}
-              className="px-5 py-2 rounded-full text-base font-semibold bg-[color:var(--red-1)] text-white hover:opacity-90 transition-opacity"
+              className="px-5 py-2 rounded-full text-base font-semibold bg-[color:var(--primary)] text-white hover:opacity-90 transition-opacity"
               type="button"
             >
               Import {selectedIds.size} {selectedIds.size === 1 ? 'Calendar' : 'Calendars'}

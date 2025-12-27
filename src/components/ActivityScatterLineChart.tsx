@@ -160,7 +160,7 @@ export function ActivityScatterLineChart({ events }: ActivityScatterLineChartPro
     if (!label) return null;
     
     return (
-      <text x={x} y={y + 15} fill="#3B3C40" fontSize={12} textAnchor="middle">
+      <text x={x} y={y + 15} fill="var(--chart-axis)" fontSize={12} textAnchor="middle">
         {label}
       </text>
     );
@@ -226,11 +226,11 @@ export function ActivityScatterLineChart({ events }: ActivityScatterLineChartPro
             scale="linear"
             tick={<CustomTick />}
             ticks={monthTickIndices}
-            stroke="#3B3C40"
+            stroke="var(--chart-axis)"
             style={{ fontSize: '12px' }}
           />
           <YAxis
-            stroke="#3B3C40"
+            stroke="var(--chart-axis)"
             style={{ fontSize: '12px' }}
             tickFormatter={formatAsCompactHoursMinutes}
           />
@@ -238,7 +238,7 @@ export function ActivityScatterLineChart({ events }: ActivityScatterLineChartPro
           <Scatter
             dataKey="minutes"
             xAxisId={0}
-            fill="var(--red-1)"
+            fill="var(--primary)"
             fillOpacity={0.6}
             shape={(props: any) => {
               if (!props.cx || !props.cy || !props.payload || props.payload.minutes === null) {
@@ -249,7 +249,7 @@ export function ActivityScatterLineChart({ events }: ActivityScatterLineChartPro
                   cx={props.cx}
                   cy={props.cy}
                   r={2}
-                  fill="var(--red-1)"
+                  fill="var(--primary)"
                   fillOpacity={0.6}
                   style={{ cursor: 'pointer' }}
                   onClick={(e) => {
@@ -269,7 +269,7 @@ export function ActivityScatterLineChart({ events }: ActivityScatterLineChartPro
             type="monotone"
             dataKey="averageMinutes"
             xAxisId={0}
-            stroke="var(--red-1)"
+            stroke="var(--primary)"
             strokeWidth={2}
             dot={false}
             activeDot={false}
@@ -294,7 +294,7 @@ export function ActivityScatterLineChart({ events }: ActivityScatterLineChartPro
               return `${formatMonth(month - 1)} ${day}, ${year}`;
             })()}
           </p>
-          <p className="text-sm text-[color:var(--red-1)]">
+          <p className="text-sm text-[color:var(--primary)]">
             {formatAsCompactHoursMinutes(clickedPoint.data.minutes)}
           </p>
         </div>

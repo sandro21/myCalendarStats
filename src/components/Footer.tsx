@@ -9,14 +9,14 @@ export function Footer() {
           <span className="text-gray-300">|</span>
           <Link 
             href="/privacy" 
-            className="hover:text-[color:var(--red-1)] transition-colors"
+            className="hover:text-[color:var(--primary)] transition-colors"
           >
             Privacy Policy
           </Link>
           <span className="text-gray-300">|</span>
           <Link 
             href="/terms" 
-            className="hover:text-[color:var(--red-1)] transition-colors"
+            className="hover:text-[color:var(--primary)] transition-colors"
           >
             Terms of Service
           </Link>

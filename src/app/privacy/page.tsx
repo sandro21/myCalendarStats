@@ -11,7 +11,7 @@ export default function PrivacyPage() {
     <main className="max-w-3xl mx-auto px-8 py-12">
       <button
         onClick={() => router.back()}
-        className="flex items-center gap-2 text-[color:var(--red-1)] hover:opacity-80 transition-opacity mb-6"
+        className="flex items-center gap-2 text-[color:var(--primary)] hover:opacity-80 transition-opacity mb-6"
       >
         <ArrowLeft size={20} />
         <span className="text-base font-medium">Back</span>
