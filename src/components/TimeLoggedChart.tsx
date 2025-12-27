@@ -353,7 +353,7 @@ export function TimeLoggedChart({ events, title = "Time Logged" }: TimeLoggedCha
             minWidth: '160px',
           }}
         >
-          <p className="text-sm font-semibold text-black">
+          <p className="text-sm font-semibold text-[color:var(--text-primary)]">
             {getTooltipLabel()}
           </p>
           <p className="text-sm text-[color:var(--primary)]">
@@ -380,7 +380,7 @@ export function TimeLoggedChart({ events, title = "Time Logged" }: TimeLoggedCha
         <h3 className="text-card-title">{title}</h3>
         <div className="relative">
           <div 
-            className="bg-white px-3 py-1.5 rounded-full flex items-center gap-1.5 cursor-pointer text-[18px] text-black"
+            className="bg-white px-3 py-1.5 rounded-full flex items-center gap-1.5 cursor-pointer text-[18px] text-[color:var(--text-primary)]"
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           >
             <span>Interval: {selectedInterval}</span>
@@ -401,7 +401,7 @@ export function TimeLoggedChart({ events, title = "Time Logged" }: TimeLoggedCha
                       setSelectedInterval(interval);
                       setIsDropdownOpen(false);
                     }}
-                    className={`w-full text-left px-3 py-1.5 text-[18px] text-black hover:bg-gray-100 first:rounded-t-lg last:rounded-b-lg ${
+                    className={`w-full text-left px-3 py-1.5 text-[18px] text-[color:var(--text-primary)] hover:bg-gray-100 first:rounded-t-lg last:rounded-b-lg ${
                       selectedInterval === interval ? 'bg-[color:var(--primary-10)]' : ''
                     }`}
                   >

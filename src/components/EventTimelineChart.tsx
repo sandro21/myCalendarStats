@@ -263,7 +263,7 @@ export function EventTimelineChart({ events }: EventTimelineChartProps) {
             >
               {/* Activity label */}
               <div 
-                className="w-40 pr-4 text-sm font-semibold text-black truncate flex-shrink-0 bg-[color:var(--card-bg)] z-10" 
+                className="w-40 pr-4 text-sm font-semibold text-[color:var(--text-primary)] truncate flex-shrink-0 bg-[color:var(--card-bg)] z-10" 
                 title={bar.activityName}
                 style={{ height: `${barHeight}px`, lineHeight: `${barHeight}px` }}
               >

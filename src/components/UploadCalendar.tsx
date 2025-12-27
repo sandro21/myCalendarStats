@@ -235,7 +235,7 @@ export function UploadCalendar({ onUploadComplete }: UploadCalendarProps) {
         <button
           onClick={handleGoogleConnect}
           disabled={isConnectingGoogle}
-          className="bg-white text-black px-8 py-4 rounded-full text-body-24 font-semibold border-2 border-gray-300 hover:border-[color:var(--primary)] hover:bg-gray-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          className="bg-white text-[color:var(--text-primary)] px-8 py-4 rounded-full text-body-24 font-semibold border-2 border-gray-300 hover:border-[color:var(--primary)] hover:bg-gray-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           type="button"
         >
           {isConnectingGoogle ? "Connecting..." : "Connect to Google Calendar"}

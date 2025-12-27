@@ -306,7 +306,7 @@ export function TimeOfDayChart({ events }: TimeOfDayChartProps) {
           }}
         >
           <div className="text-center">
-            <div className="text-sm font-semibold text-black mb-1">
+            <div className="text-sm font-semibold text-[color:var(--text-primary)] mb-1">
               {formatHourLabel(hoveredHour)}
             </div>
             <div className="text-sm text-[color:var(--primary)] font-semibold">

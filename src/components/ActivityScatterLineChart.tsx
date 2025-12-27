@@ -288,7 +288,7 @@ export function ActivityScatterLineChart({ events }: ActivityScatterLineChartPro
             top: `${clickedPoint.y - 50}px`,
           }}
         >
-          <p className="text-sm font-semibold text-black">
+          <p className="text-sm font-semibold text-[color:var(--text-primary)]">
             {(() => {
               const [year, month, day] = clickedPoint.data.date.split('-').map(Number);
               return `${formatMonth(month - 1)} ${day}, ${year}`;

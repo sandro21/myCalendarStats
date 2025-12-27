@@ -80,7 +80,7 @@ export function GoogleCalendarSelector({
         {/* Header */}
         <div className="px-6 py-3 border-b border-gray-200 flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold text-black">
+            <h2 className="text-2xl font-bold text-[color:var(--text-primary)]">
               Select Calendars to Import
             </h2>
             <p className="text-base text-gray-600 mt-1">
@@ -121,7 +121,7 @@ export function GoogleCalendarSelector({
                         style={{ backgroundColor: calendar.backgroundColor }}
                       />
                     )}
-                     <span className="font-medium text-black truncate text-lg">
+                     <span className="font-medium text-[color:var(--text-primary)] truncate text-lg">
                        {calendar.summary}
                        {calendar.primary && (
                          <span className="ml-2 text-xs text-[color:var(--primary)] font-semibold">

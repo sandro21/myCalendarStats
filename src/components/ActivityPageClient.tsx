@@ -162,7 +162,7 @@ export function ActivityPageClient({ events, searchString, searchType, timeFilte
       {/* Section 1 Header */}
       <section>
         <div className="flex items-center justify-between">
-          <h2 className="text-section-header text-black font-bold italic">
+          <h2 className="text-section-header text-[color:var(--text-primary)] font-bold italic">
             {activityStats.name}
           </h2>
           {firstSessionEvent && lastSessionEvent && (
@@ -204,7 +204,7 @@ export function ActivityPageClient({ events, searchString, searchType, timeFilte
 
           {/* 4. Bottom - Daily Average */}
           <div className="card-soft flex flex-col items-center justify-center text-center px-6">
-            <h3 className="text-card-title text-black">Daily Average</h3>
+            <h3 className="text-card-title text-[color:var(--text-primary)]">Daily Average</h3>
             <div className="mt-4 text-number-large text-[color:var(--primary)]">
               {formatAsCompactHoursMinutes(dailyAverage)}
             </div>
@@ -212,7 +212,7 @@ export function ActivityPageClient({ events, searchString, searchType, timeFilte
 
           {/* 5. Bottom - Weekly Average */}
           <div className="card-soft flex flex-col items-center justify-center text-center px-6">
-            <h3 className="text-card-title text-black">Weekly Average</h3>
+            <h3 className="text-card-title text-[color:var(--text-primary)]">Weekly Average</h3>
             <div className="mt-4 text-number-large text-[color:var(--primary)]">
               {formatAsCompactHoursMinutes(weeklyAverage)}
             </div>
@@ -318,7 +318,7 @@ export function ActivityPageClient({ events, searchString, searchType, timeFilte
 
       {/* Habits Section */}
       <section>
-        <h2 className="text-section-header text-black">
+        <h2 className="text-section-header text-[color:var(--text-primary)]">
           Habits
         </h2>
 

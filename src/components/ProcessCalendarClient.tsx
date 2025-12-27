@@ -256,7 +256,7 @@ export function ProcessCalendarClient({ events: contextEvents }: ProcessCalendar
     <div className="max-w-4xl mx-auto space-y-8">
       {/* Header */}
       <div className="text-center space-y-4">
-        <h1 className="text-4xl font-bold text-black">Clean Your Calendar</h1>
+        <h1 className="text-4xl font-bold text-[color:var(--text-primary)]">Clean Your Calendar</h1>
         <p className="text-body-24 text-[color:var(--gray)]">
           We found {originalEvents.length} events. Review and clean up your data before viewing stats.
         </p>
@@ -268,11 +268,11 @@ export function ProcessCalendarClient({ events: contextEvents }: ProcessCalendar
             <div className="flex gap-4">
               <div>
                 <p className="text-xs text-[color:var(--gray)]">Events</p>
-                <p className="text-xl font-bold text-black">{originalEvents.length}</p>
+                <p className="text-xl font-bold text-[color:var(--text-primary)]">{originalEvents.length}</p>
               </div>
               <div>
                 <p className="text-xs text-[color:var(--gray)]">Activities</p>
-                <p className="text-xl font-bold text-black">{originalStats?.uniqueActivities || 0}</p>
+                <p className="text-xl font-bold text-[color:var(--text-primary)]">{originalStats?.uniqueActivities || 0}</p>
               </div>
             </div>
           </div>
@@ -302,7 +302,7 @@ export function ProcessCalendarClient({ events: contextEvents }: ProcessCalendar
           className={`px-6 py-2 rounded-full text-body-24 ${
             currentStep === "suggestions"
               ? "bg-[color:var(--primary)] text-white"
-              : "bg-gray-200 text-black"
+              : "bg-gray-200 text-[color:var(--text-primary)]"
           }`}
         >
           Merge Activities
@@ -312,7 +312,7 @@ export function ProcessCalendarClient({ events: contextEvents }: ProcessCalendar
           className={`px-6 py-2 rounded-full text-body-24 ${
             currentStep === "quality"
               ? "bg-[color:var(--primary)] text-white"
-              : "bg-gray-200 text-black"
+              : "bg-gray-200 text-[color:var(--text-primary)]"
           }`}
         >
           Data Quality
@@ -392,7 +392,7 @@ function MergeSuggestionsStep({
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-black mb-4">Activity Merge Suggestions</h2>
+      <h2 className="text-2xl font-bold text-[color:var(--text-primary)] mb-4">Activity Merge Suggestions</h2>
       <p className="text-base text-[color:var(--gray)] mb-6">
         We found {suggestions.length} groups of similar activities that you might want to merge.
       </p>
@@ -424,7 +424,7 @@ function MergeSuggestionsStep({
                   
                   <div className="space-y-1 mb-3">
                     {suggestion.activities.map((activity, i) => (
-                      <div key={i} className="text-base text-black">
+                      <div key={i} className="text-base text-[color:var(--text-primary)]">
                         • {activity}
                       </div>
                     ))}
@@ -447,21 +447,21 @@ function MergeSuggestionsStep({
                       </button>
                       <button
                         onClick={() => setEditingSuggestion(null)}
-                        className="px-4 py-2 bg-gray-200 text-black rounded-lg text-sm"
+                        className="px-4 py-2 bg-gray-200 text-[color:var(--text-primary)] rounded-lg text-sm"
                       >
                         Cancel
                       </button>
                     </div>
                   ) : (
                     <div className="flex items-center gap-2">
-                      <span className="text-base font-semibold text-black">
+                      <span className="text-base font-semibold text-[color:var(--text-primary)]">
                         → Merge to: "{suggestion.suggestedName}"
                       </span>
                       {!applied && (
                         <>
                           <button
                             onClick={() => handleStartEdit(suggestion)}
-                            className="px-4 py-2 bg-gray-200 text-black rounded-lg text-sm"
+                            className="px-4 py-2 bg-gray-200 text-[color:var(--text-primary)] rounded-lg text-sm"
                           >
                             Edit Name
                           </button>
@@ -473,7 +473,7 @@ function MergeSuggestionsStep({
                           </button>
                           <button
                             onClick={() => onReject(suggestion)}
-                            className="px-4 py-2 bg-gray-200 text-black rounded-lg text-sm"
+                            className="px-4 py-2 bg-gray-200 text-[color:var(--text-primary)] rounded-lg text-sm"
                           >
                             Skip
                           </button>
@@ -533,7 +533,7 @@ function DataQualityStep({
     <div className="space-y-6">
       <div className="flex items-start justify-between mb-4">
         <div>
-          <h2 className="text-2xl font-bold text-black">Data Quality Issues</h2>
+          <h2 className="text-2xl font-bold text-[color:var(--text-primary)]">Data Quality Issues</h2>
           <p className="text-body-24 text-[color:var(--gray)] mt-2">
             We found {issues.length} potential issues. Review and decide what to keep or remove.
           </p>
@@ -611,7 +611,7 @@ function IssueCard({
               {getIssueTypeLabel()}
             </span>
           </div>
-          <p className="font-semibold text-black mb-1 text-left">{issue.event.title}</p>
+          <p className="font-semibold text-[color:var(--text-primary)] mb-1 text-left">{issue.event.title}</p>
           <p className="text-sm text-[color:var(--gray)] mb-2 text-left">{issue.message}</p>
           <p className="text-xs text-[color:var(--gray)] text-left">
             {issue.event.start.toLocaleDateString()} • {Math.round(issue.event.durationMinutes / 60)}h {issue.event.durationMinutes % 60}m
@@ -620,7 +620,7 @@ function IssueCard({
         <div className="flex gap-2 ml-4">
           <button
             onClick={() => onKeep(issue)}
-            className="px-4 py-2 bg-gray-200 text-black rounded-full text-sm hover:bg-gray-300 transition-colors"
+            className="px-4 py-2 bg-gray-200 text-[color:var(--text-primary)] rounded-full text-sm hover:bg-gray-300 transition-colors"
           >
             Keep
           </button>
@@ -664,11 +664,11 @@ function PreviewStep({
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-black mb-4">Preview Changes</h2>
+      <h2 className="text-2xl font-bold text-[color:var(--text-primary)] mb-4">Preview Changes</h2>
       
       <div className="grid grid-cols-2 gap-6">
         <div className="space-y-4">
-          <h3 className="text-xl font-semibold text-black">Before</h3>
+          <h3 className="text-xl font-semibold text-[color:var(--text-primary)]">Before</h3>
           <div className="space-y-2">
             <p className="text-body-24">
               <span className="font-semibold">Events:</span> {originalCount}
@@ -683,7 +683,7 @@ function PreviewStep({
         </div>
 
         <div className="space-y-4">
-          <h3 className="text-xl font-semibold text-black">After</h3>
+          <h3 className="text-xl font-semibold text-[color:var(--text-primary)]">After</h3>
           <div className="space-y-2">
             <p className="text-body-24">
               <span className="font-semibold">Events:</span> {processedCount}
