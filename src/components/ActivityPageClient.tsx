@@ -18,6 +18,7 @@ import { ActivityDurationChart } from "@/components/ActivityDurationChart";
 import { ActivityScatterLineChart } from "@/components/ActivityScatterLineChart";
 import { TimeOfDayChart } from "@/components/TimeOfDayChart";
 import { ActivityPeakMonthChart } from "@/components/ActivityPeakMonthChart";
+import { ActivityBreadcrumbSearch } from "@/components/ActivityBreadcrumbSearch";
 
 function formatDate(date: Date): string {
   return date.toLocaleDateString('en-US', { 
@@ -159,19 +160,11 @@ export function ActivityPageClient({ events, searchString, searchType, timeFilte
 
   return (
     <>
-      {/* Section 1 Header */}
-      <section>
-        <div className="flex items-center justify-between">
-          <h2 className="text-section-header text-[color:var(--text-primary)] font-bold italic">
-            {activityStats.name}
-          </h2>
-          {firstSessionEvent && lastSessionEvent && (
-            <span className="text-section-header text-[color:var(--gray)]">
-              {formatDate(firstSessionEvent.start)} - {formatDate(lastSessionEvent.start)}
-            </span>
-          )}
-        </div>
+      {/* Activity Breadcrumb Search */}
+      <ActivityBreadcrumbSearch events={events} />
 
+      {/* All Sections Grouped */}
+      <div className="sections-container">
         {/* grid of cards */}
         <div className="grid grid-cols-[1fr_1.1fr_3fr] auto-rows-[200px] gap-3">
           {/* 1. Top left - Total Count (spans 1 col) */}
@@ -218,7 +211,6 @@ export function ActivityPageClient({ events, searchString, searchType, timeFilte
             </div>
           </div>
         </div>
-      </section>
 
       {/* Session Durations Section */}
       <section>
@@ -351,6 +343,7 @@ export function ActivityPageClient({ events, searchString, searchType, timeFilte
           )}
         </div>
       </section>
+      </div>
     </>
   );
 }

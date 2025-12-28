@@ -66,7 +66,7 @@ export default function RootLayout({
           <EventsProvider>
             <div className="min-h-screen bg-[color:var(--page-bg)] bg-blobs flex flex-col">
               <GlobalFilterBar />
-              <div className="flex-1 px-18 py-12">
+              <div className="flex-1">
                 {children}
               </div>
               <Footer />
