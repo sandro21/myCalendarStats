@@ -65,8 +65,13 @@ export default function RootLayout({
         <FilterProvider>
           <EventsProvider>
             <div className="min-h-screen bg-[color:var(--page-bg)] bg-blobs flex flex-col">
+              {/* Additional background blobs */}
+              <div className="bg-blob-1"></div>
+              <div className="bg-blob-2"></div>
+              <div className="bg-blob-3"></div>
+              
               <GlobalFilterBar />
-              <div className="flex-1">
+              <div className="flex-1" style={{ position: 'relative', zIndex: 1 }}>
                 {children}
               </div>
               <Footer />
