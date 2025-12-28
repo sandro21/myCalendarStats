@@ -19,7 +19,7 @@ import { DayOfWeekChart } from "@/components/DayOfWeekChart";
 import { ActivityDurationChart } from "@/components/ActivityDurationChart";
 import { TimeOfDayChart } from "@/components/TimeOfDayChart";
 import { EventTimelineChart } from "@/components/EventTimelineChart";
-import { ActivityBreadcrumbSearch } from "@/components/ActivityBreadcrumbSearch";
+import { ActivityBreadcrumbSearchWrapper } from "@/components/ActivityBreadcrumbSearchWrapper";
 
 interface DashboardClientProps {
   events: CalendarEvent[];
@@ -69,7 +69,7 @@ export function DashboardClient({ events }: DashboardClientProps) {
   return (
     <>
       {/* Activity Breadcrumb Search */}
-      <ActivityBreadcrumbSearch events={events} />
+      <ActivityBreadcrumbSearchWrapper events={events} />
 
       {/* All Sections Grouped */}
       <div className="sections-container">

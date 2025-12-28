@@ -18,7 +18,7 @@ import { ActivityDurationChart } from "@/components/ActivityDurationChart";
 import { ActivityScatterLineChart } from "@/components/ActivityScatterLineChart";
 import { TimeOfDayChart } from "@/components/TimeOfDayChart";
 import { ActivityPeakMonthChart } from "@/components/ActivityPeakMonthChart";
-import { ActivityBreadcrumbSearch } from "@/components/ActivityBreadcrumbSearch";
+import { ActivityBreadcrumbSearchWrapper } from "@/components/ActivityBreadcrumbSearchWrapper";
 
 function formatDate(date: Date): string {
   return date.toLocaleDateString('en-US', { 
@@ -161,7 +161,7 @@ export function ActivityPageClient({ events, searchString, searchType, timeFilte
   return (
     <>
       {/* Activity Breadcrumb Search */}
-      <ActivityBreadcrumbSearch events={events} />
+      <ActivityBreadcrumbSearchWrapper events={events} />
 
       {/* All Sections Grouped */}
       <div className="sections-container">
