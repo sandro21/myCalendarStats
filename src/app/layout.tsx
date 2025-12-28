@@ -65,10 +65,8 @@ export default function RootLayout({
         <FilterProvider>
           <EventsProvider>
             <div className="min-h-screen bg-[color:var(--page-bg)] bg-blobs flex flex-col">
-              <div className="mx-auto px-18 py-12">
-                <GlobalFilterBar />
-              </div>
-              <div className="flex-1">
+              <GlobalFilterBar />
+              <div className="flex-1 px-18 py-12">
                 {children}
               </div>
               <Footer />

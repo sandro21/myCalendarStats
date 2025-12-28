@@ -1,8 +1,8 @@
 "use client";
 
-import { Trash2 } from "lucide-react";
+import { Trash2, SlidersHorizontal } from "lucide-react";
 import { useFilter } from "@/contexts/FilterContext";
-import { ActivitySearchWrapper } from "@/components/ActivitySearchWrapper";
+// import { ActivitySearchWrapper } from "@/components/ActivitySearchWrapper";
 import { useEvents } from "@/contexts/EventsContext";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -147,8 +147,36 @@ export function GlobalFilterBar() {
   };
 
   return (
-    <div className="max-w-full h-[50px] flex items-start">
-      {/* Left: Clear Data & Clean Data Buttons */}
+    <div 
+      className="w-full flex flex-row items-center justify-between px-6 py-3"
+      style={{
+        background: 'var(--card-bg)',
+        backdropFilter: 'blur(var(--card-backdrop-blur))',
+      }}
+    >
+      {/* Left: Logo */}
+      <div className="flex items-center">
+        <img src="/blacklogo.png" alt="myCalendarStats" className="h-10" />
+      </div>
+
+      {/* Right: Navigation Buttons */}
+      <div className="flex flex-row items-center gap-2">
+        <button
+          className="header-nav-button text-body-24 text-[color:var(--text-primary)] px-4 py-1 flex items-center gap-2"
+        >
+          <SlidersHorizontal size={20} />
+          Manage and Filter
+        </button>
+        <button
+          className="header-delete-button flex items-center justify-center p-2"
+          onClick={handleClearData}
+        >
+          <Trash2 size={24} className="text-white" />
+        </button>
+      </div>
+
+      {/* COMMENTED OUT: Month/Year/Lifetime Filter Component */}
+      {/* 
       <div className="flex-1 flex items-start justify-start gap-3">
         <button
           onClick={handleClearData}
@@ -173,9 +201,7 @@ export function GlobalFilterBar() {
         </button>
       </div>
 
-      {/* Center: Filter Options */}
       <div className="flex-1 flex flex-col items-center justify-center gap-1">
-        {/* Big capsule with filter options */}
         <div 
           className="px-1 py-1 flex flex-row items-center gap-1"
           style={{
@@ -205,7 +231,6 @@ export function GlobalFilterBar() {
           ))}
         </div>
 
-        {/* Year/Month Navigation (only shows for Month and Year) */}
         {(selectedFilter === "Month" || selectedFilter === "Year") && (
           <div className="flex items-center gap-3">
             <button
@@ -238,10 +263,10 @@ export function GlobalFilterBar() {
         )}
       </div>
 
-      {/* Right: Search Activity */}
       <div className="flex-1 flex items-start justify-end">
         <ActivitySearchWrapper events={events} />
       </div>
+      */}
     </div>
   );
 }
