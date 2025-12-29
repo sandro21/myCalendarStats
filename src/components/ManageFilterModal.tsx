@@ -12,6 +12,7 @@ interface CalendarSource {
   source?: 'google';
   googleCalendarId?: string;
   color?: string;
+  accessRole?: string; // 'owner', 'writer', 'reader', 'freeBusyReader' - for Google calendars
 }
 
 interface ManageFilterModalProps {
@@ -257,65 +258,140 @@ export function ManageFilterModal({ isOpen, onClose }: ManageFilterModalProps) {
         <div className="flex flex-col min-h-0">
           {/* Main Content Area */}
           <div className="flex-1 overflow-y-auto custom-scrollbar">
-            {selectedMenu === "Calendars" && (
-              <div className="px-8 py-6 space-y-6">
-                {/* Your Calendars Section */}
-                <div>
-                  <h3 className="text-body-24 font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>
-                    Your Calendars
-                  </h3>
-                  
-                  {/* Calendar List */}
-                  <div className="space-y-4">
-                    {calendars.map((calendar, index) => {
-                      const isEnabled = enabledCalendars.has(calendar.id);
-                      const eventCount = getEventCount(calendar.id);
-                      const calendarColor = getCalendarColor(calendar, index);
+            {selectedMenu === "Calendars" && (() => {
+              // Separate calendars into "Your Calendars" (owner/writer or ICS files) and "Others" (read-only)
+              const yourCalendars = calendars.filter(cal => 
+                !cal.source || // ICS files (no source)
+                cal.accessRole === 'owner' || 
+                cal.accessRole === 'writer' ||
+                !cal.accessRole // If accessRole is not set, assume it's owned
+              );
+              const otherCalendars = calendars.filter(cal => 
+                cal.accessRole === 'reader' || 
+                cal.accessRole === 'freeBusyReader'
+              );
+
+              return (
+                <div className="px-8 py-6 space-y-6">
+                  {/* Your Calendars Section */}
+                  {yourCalendars.length > 0 && (
+                    <div>
+                      <h3 className="text-[24px] font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>
+                        Your Calendars
+                      </h3>
                       
-                      return (
-                        <div key={calendar.id} className="flex items-center gap-4">
-                          {/* Toggle Switch */}
-                          <button
-                            onClick={() => toggleCalendar(calendar.id)}
-                            className="relative w-12 h-6 rounded-full transition-colors"
-                            style={{
-                              backgroundColor: isEnabled ? 'var(--primary)' : 'rgba(0, 0, 0, 0.2)',
-                            }}
-                          >
-                            <span
-                              className="absolute top-1 w-4 h-4 bg-white rounded-full transition-transform"
-                              style={{
-                                left: isEnabled ? 'calc(100% - 1rem - 4px)' : '4px',
-                              }}
-                            />
-                          </button>
+                      {/* Calendar List */}
+                      <div className="space-y-4">
+                        {yourCalendars.map((calendar, index) => {
+                          const isEnabled = enabledCalendars.has(calendar.id);
+                          const eventCount = getEventCount(calendar.id);
+                          const calendarColor = getCalendarColor(calendar, index);
                           
-                          {/* Calendar Info */}
-                          <div className="flex-1 flex flex-col min-w-0 overflow-hidden" style={{ lineHeight: '1.2' }}>
-                            <div className="flex items-center gap-2 min-w-0">
-                              <span 
-                                className="text-[24px] font-medium truncate max-w-[300px]" 
-                                style={{ color: 'var(--text-primary)' }}
-                                title={calendar.name}
+                          return (
+                            <div key={calendar.id} className="flex items-center gap-4">
+                              {/* Toggle Switch */}
+                              <button
+                                onClick={() => toggleCalendar(calendar.id)}
+                                className="relative w-12 h-6 rounded-full transition-colors flex-shrink-0"
+                                style={{
+                                  backgroundColor: isEnabled ? 'var(--primary)' : 'rgba(0, 0, 0, 0.2)',
+                                }}
                               >
-                                {calendar.name}
-                              </span>
-                              <div
-                                className="w-4 h-4 rounded-full flex-shrink-0"
-                                style={{ backgroundColor: calendarColor }}
-                              />
+                                <span
+                                  className="absolute top-1 w-4 h-4 bg-white rounded-full transition-transform"
+                                  style={{
+                                    left: isEnabled ? 'calc(100% - 1rem - 4px)' : '4px',
+                                  }}
+                                />
+                              </button>
+                              
+                              {/* Calendar Info */}
+                              <div className="flex-1 flex flex-col min-w-0" style={{ lineHeight: '1.2' }}>
+                                <div className="flex items-center gap-2 overflow-hidden">
+                                  <span 
+                                    className="text-[24px] font-medium truncate max-w-[300px]" 
+                                    style={{ color: 'var(--text-primary)' }}
+                                    title={calendar.name}
+                                  >
+                                    {calendar.name}
+                                  </span>
+                                  <div
+                                    className="w-4 h-4 rounded-full flex-shrink-0"
+                                    style={{ backgroundColor: calendarColor }}
+                                  />
+                                </div>
+                                <p className="text-[18px] font-medium" style={{ color: 'var(--text-secondary)', margin: 0 }}>
+                                  {eventCount} {eventCount === 1 ? 'Event' : 'Events'}
+                                </p>
+                              </div>
                             </div>
-                            <p className="text-[18px] font-medium" style={{ color: 'var(--text-secondary)', margin: 0 }}>
-                              {eventCount} {eventCount === 1 ? 'Event' : 'Events'}
-                            </p>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Others Section (Read-only calendars) */}
+                  {otherCalendars.length > 0 && (
+                    <div>
+                      <h3 className="text-[24px] font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>
+                        Others
+                      </h3>
+                      
+                      {/* Calendar List */}
+                      <div className="space-y-4">
+                        {otherCalendars.map((calendar, index) => {
+                          const isEnabled = enabledCalendars.has(calendar.id);
+                          const eventCount = getEventCount(calendar.id);
+                          // Use index offset for color calculation
+                          const calendarColor = getCalendarColor(calendar, yourCalendars.length + index);
+                          
+                          return (
+                            <div key={calendar.id} className="flex items-center gap-4">
+                              {/* Toggle Switch */}
+                              <button
+                                onClick={() => toggleCalendar(calendar.id)}
+                                className="relative w-12 h-6 rounded-full transition-colors flex-shrink-0"
+                                style={{
+                                  backgroundColor: isEnabled ? 'var(--primary)' : 'rgba(0, 0, 0, 0.2)',
+                                }}
+                              >
+                                <span
+                                  className="absolute top-1 w-4 h-4 bg-white rounded-full transition-transform"
+                                  style={{
+                                    left: isEnabled ? 'calc(100% - 1rem - 4px)' : '4px',
+                                  }}
+                                />
+                              </button>
+                              
+                              {/* Calendar Info */}
+                              <div className="flex-1 flex flex-col min-w-0" style={{ lineHeight: '1.2' }}>
+                                <div className="flex items-center gap-2 overflow-hidden">
+                                  <span 
+                                    className="text-[24px] font-medium truncate max-w-[300px]" 
+                                    style={{ color: 'var(--text-primary)' }}
+                                    title={calendar.name}
+                                  >
+                                    {calendar.name}
+                                  </span>
+                                  <div
+                                    className="w-4 h-4 rounded-full flex-shrink-0"
+                                    style={{ backgroundColor: calendarColor }}
+                                  />
+                                </div>
+                                <p className="text-[18px] font-medium" style={{ color: 'var(--text-secondary)', margin: 0 }}>
+                                  {eventCount} {eventCount === 1 ? 'Event' : 'Events'}
+                                </p>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
                 </div>
-              </div>
-            )}
+              );
+            })()}
             
             {selectedMenu === "Merge Similar" && (
               <div className="px-8 py-6">

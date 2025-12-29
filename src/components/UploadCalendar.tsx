@@ -135,7 +135,7 @@ export function UploadCalendar({ onUploadComplete }: UploadCalendarProps) {
     }
   };
 
-  const handleCalendarSelection = async (selectedCalendarIds: string[]) => {
+  const handleCalendarSelection = async (selectedCalendars: any[]) => {
     setShowCalendarSelector(false);
     setIsConnectingGoogle(true);
     setError(null);
@@ -145,8 +145,7 @@ export function UploadCalendar({ onUploadComplete }: UploadCalendarProps) {
       const allEvents: CalendarEvent[] = [];
       const newCalendars: any[] = [];
 
-      for (const calendarId of selectedCalendarIds) {
-        const calendar = availableCalendars.find(cal => cal.id === calendarId);
+      for (const calendar of selectedCalendars) {
         if (!calendar) continue;
 
         try {
@@ -165,6 +164,7 @@ export function UploadCalendar({ onUploadComplete }: UploadCalendarProps) {
               name: calendar.summary || 'Untitled Calendar',
               source: 'google',
               googleCalendarId: calendar.id,
+              accessRole: calendar.accessRole, // Store access role to identify read-only calendars
               uploadedAt: new Date().toISOString(),
             });
           }
