@@ -23,29 +23,33 @@ export function GoogleCalendarSelector({
   onConfirm,
   onCancel,
 }: GoogleCalendarSelectorProps) {
-  // Sort calendars: primary first, then by access role (owner > writer > reader)
-  const sortedCalendars = [...calendars].sort((a, b) => {
-    // Primary calendar always first
+  // Separate calendars into "Your Calendars" (owner/writer) and "Others" (read-only)
+  const yourCalendars = calendars.filter(cal => 
+    cal.accessRole === 'owner' || 
+    cal.accessRole === 'writer' ||
+    !cal.accessRole // If accessRole is not set, assume it's owned
+  );
+  
+  const otherCalendars = calendars.filter(cal => 
+    cal.accessRole === 'reader' || 
+    cal.accessRole === 'freeBusyReader'
+  );
+
+  // Sort "Your Calendars": primary first, then by name
+  const sortedYourCalendars = [...yourCalendars].sort((a, b) => {
     if (a.primary) return -1;
     if (b.primary) return 1;
-    
-    // Then by access role
-    const roleOrder: Record<string, number> = {
-      owner: 1,
-      writer: 2,
-      reader: 3,
-      freeBusyReader: 4,
-    };
-    
-    const aOrder = roleOrder[a.accessRole || ''] || 5;
-    const bOrder = roleOrder[b.accessRole || ''] || 5;
-    
-    return aOrder - bOrder;
+    return (a.summary || '').localeCompare(b.summary || '');
+  });
+
+  // Sort "Others": by name
+  const sortedOtherCalendars = [...otherCalendars].sort((a, b) => {
+    return (a.summary || '').localeCompare(b.summary || '');
   });
 
   const [selectedIds, setSelectedIds] = useState<Set<string>>(
-    // Pre-select the primary calendar by default
-    new Set(sortedCalendars.filter(cal => cal.primary).map(cal => cal.id))
+    // Pre-select all "Your Calendars" by default, but not "Others"
+    new Set(sortedYourCalendars.map(cal => cal.id))
   );
 
   const toggleCalendar = (calendarId: string) => {
@@ -59,7 +63,7 @@ export function GoogleCalendarSelector({
   };
 
   const handleSelectAll = () => {
-    setSelectedIds(new Set(sortedCalendars.map(cal => cal.id)));
+    setSelectedIds(new Set([...yourCalendars, ...otherCalendars].map(cal => cal.id)));
   };
 
   const handleSelectNone = () => {
@@ -72,7 +76,8 @@ export function GoogleCalendarSelector({
       return;
     }
     // Pass full calendar objects instead of just IDs
-    const selectedCalendars = sortedCalendars.filter(cal => selectedIds.has(cal.id));
+    const allCalendars = [...yourCalendars, ...otherCalendars];
+    const selectedCalendars = allCalendars.filter(cal => selectedIds.has(cal.id));
     onConfirm(selectedCalendars);
   };
 
@@ -103,48 +108,100 @@ export function GoogleCalendarSelector({
 
         {/* Calendar List */}
         <div className="flex-1 overflow-y-auto px-6 py-3">
-          <div className="space-y-0">
-            {sortedCalendars.map((calendar) => (
-              <label
-                key={calendar.id}
-                className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors border border-transparent hover:border-gray-200"
-              >
-                <input
-                  type="checkbox"
-                  checked={selectedIds.has(calendar.id)}
-                  onChange={() => toggleCalendar(calendar.id)}
-                  className="w-5 h-5 rounded border-gray-300 text-[color:var(--primary)] focus:ring-[color:var(--primary)] cursor-pointer"
-                />
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    {calendar.backgroundColor && (
-                      <div
-                        className="w-3 h-3 rounded-full flex-shrink-0"
-                        style={{ backgroundColor: calendar.backgroundColor }}
+          <div className="space-y-4">
+            {/* Your Calendars Section */}
+            {sortedYourCalendars.length > 0 && (
+              <div>
+                <h3 className="text-lg font-semibold text-[color:var(--text-primary)] mb-3">
+                  Your Calendars
+                </h3>
+                <div className="space-y-0">
+                  {sortedYourCalendars.map((calendar) => (
+                    <label
+                      key={calendar.id}
+                      className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors border border-transparent hover:border-gray-200"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.has(calendar.id)}
+                        onChange={() => toggleCalendar(calendar.id)}
+                        className="w-5 h-5 rounded border-gray-300 text-[color:var(--primary)] focus:ring-[color:var(--primary)] cursor-pointer"
                       />
-                    )}
-                     <span className="font-medium text-[color:var(--text-primary)] truncate text-lg">
-                       {calendar.summary}
-                       {calendar.primary && (
-                         <span className="ml-2 text-xs text-[color:var(--primary)] font-semibold">
-                           PRIMARY
-                         </span>
-                       )}
-                       {calendar.accessRole === 'reader' && (
-                         <span className="ml-2 text-xs text-gray-500 font-medium">
-                           (Read Only)
-                         </span>
-                       )}
-                       {calendar.accessRole === 'writer' && !calendar.primary && (
-                         <span className="ml-2 text-xs text-blue-600 font-medium">
-                           (Shared - Can Edit)
-                         </span>
-                       )}
-                     </span>
-                  </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          {calendar.backgroundColor && (
+                            <div
+                              className="w-3 h-3 rounded-full flex-shrink-0"
+                              style={{ backgroundColor: calendar.backgroundColor }}
+                            />
+                          )}
+                          <span className="font-medium text-[color:var(--text-primary)] truncate text-lg">
+                            {calendar.summary}
+                            {calendar.primary && (
+                              <span className="ml-2 text-xs text-[color:var(--primary)] font-semibold">
+                                PRIMARY
+                              </span>
+                            )}
+                            {calendar.accessRole === 'writer' && !calendar.primary && (
+                              <span className="ml-2 text-xs text-blue-600 font-medium">
+                                (Shared - Can Edit)
+                              </span>
+                            )}
+                          </span>
+                        </div>
+                      </div>
+                    </label>
+                  ))}
                 </div>
-              </label>
-            ))}
+              </div>
+            )}
+
+            {/* Others Section (Read-only calendars) */}
+            {sortedOtherCalendars.length > 0 && (
+              <div>
+                <h3 className="text-lg font-semibold text-[color:var(--text-primary)] mb-3">
+                  Others
+                </h3>
+                <div className="space-y-0">
+                  {sortedOtherCalendars.map((calendar) => (
+                    <label
+                      key={calendar.id}
+                      className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors border border-transparent hover:border-gray-200"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.has(calendar.id)}
+                        onChange={() => toggleCalendar(calendar.id)}
+                        className="w-5 h-5 rounded border-gray-300 text-[color:var(--primary)] focus:ring-[color:var(--primary)] cursor-pointer"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          {calendar.backgroundColor && (
+                            <div
+                              className="w-3 h-3 rounded-full flex-shrink-0"
+                              style={{ backgroundColor: calendar.backgroundColor }}
+                            />
+                          )}
+                          <span className="font-medium text-[color:var(--text-primary)] truncate text-lg">
+                            {calendar.summary}
+                            {calendar.accessRole === 'reader' && (
+                              <span className="ml-2 text-xs text-gray-500 font-medium">
+                                (Read Only)
+                              </span>
+                            )}
+                            {calendar.accessRole === 'freeBusyReader' && (
+                              <span className="ml-2 text-xs text-gray-500 font-medium">
+                                (Free/Busy Only)
+                              </span>
+                            )}
+                          </span>
+                        </div>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

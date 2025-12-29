@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { UploadCalendar } from "@/components/UploadCalendar";
 import { CalendarEvent } from "@/lib/calculations/stats";
 
@@ -43,6 +44,23 @@ export default function UploadPage() {
         </p>
         
         <UploadCalendar onUploadComplete={handleUploadComplete} />
+
+        {/* Google OAuth Verification Requirements - Subtle Information Section */}
+        <div className="mt-12 w-full max-w-xl text-center space-y-3">
+          <p className="text-sm text-[color:var(--text-secondary)] leading-relaxed">
+            <strong className="text-[color:var(--text-primary)]">MyCalendarStats</strong> is a calendar analytics tool that helps you visualize and understand how you spend your time. 
+            We analyze your calendar events to generate statistics, charts, and insights about your activities, habits, and time patterns.
+          </p>
+          <p className="text-sm text-[color:var(--text-secondary)] leading-relaxed">
+            When you connect your Google Calendar, we request read-only access to your calendar events solely to generate these personalized statistics and visualizations. 
+            All data processing happens locally in your browser—we do not store your calendar data on our servers.
+          </p>
+          <p className="text-sm text-[color:var(--text-secondary)]">
+            <Link href="/privacy" className="text-[color:var(--primary)] hover:underline">
+              View our Privacy Policy
+            </Link>
+          </p>
+        </div>
       </div>
     </main>
   );
