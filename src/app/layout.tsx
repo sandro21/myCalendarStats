@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Urbanist } from "next/font/google";
 import "./globals.css";
 import { GlobalFilterBar } from "@/components/GlobalFilterBar";
+import { Suspense } from "react";
 import { Footer } from "@/components/Footer";
 import { FilterProvider } from "@/contexts/FilterContext";
 import { EventsProvider } from "@/contexts/EventsContext";
@@ -70,7 +71,9 @@ export default function RootLayout({
               <div className="bg-blob-2"></div>
               <div className="bg-blob-3"></div>
               
-              <GlobalFilterBar />
+              <Suspense fallback={null}>
+                <GlobalFilterBar />
+              </Suspense>
               <div className="flex-1" style={{ position: 'relative', zIndex: 1 }}>
                 {children}
               </div>
