@@ -170,6 +170,17 @@
   padding-right: 24px;
 }
 
+/* Modal Container - Similar to card but different sizing */
+.modal-container {
+  border-radius: var(--card-radius-lg);
+  background: var(--card-bg);
+  box-shadow: var(--card-shadow);
+  backdrop-filter: blur(var(--card-backdrop-blur));
+  width: 80vw;
+  height: 80vh;
+  overflow-y: auto;
+}
+
 /* Soft primary background blobs */
 .bg-blobs {
   position: relative;
@@ -290,7 +301,8 @@
 /* Header Navigation Buttons */
 .header-nav-button {
   border-radius: 9999px;
-  background-color: var(--card-bg);
+  background-color: var(--bg-white);
+  border: 2px;
   color: var(--text-primary);
   cursor: pointer;
   transition: opacity 0.2s;

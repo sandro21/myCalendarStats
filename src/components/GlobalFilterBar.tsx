@@ -6,11 +6,13 @@ import { useFilter } from "@/contexts/FilterContext";
 import { useEvents } from "@/contexts/EventsContext";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import { ManageFilterModal } from "@/components/ManageFilterModal";
 
 export function GlobalFilterBar() {
   const pathname = usePathname();
   const router = useRouter();
   const [scrollY, setScrollY] = useState(0);
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   
   // Hide filter bar on upload, process, privacy, and terms pages
   if (pathname === "/upload" || pathname === "/process" || pathname === "/privacy" || pathname === "/terms") {
@@ -183,12 +185,13 @@ export function GlobalFilterBar() {
 
         {/* Right: Navigation Buttons */}
         <div className="flex flex-row items-center gap-2">
-          <button
-            className="header-nav-button text-body-24 text-[color:var(--text-primary)] px-4 py-1 flex items-center gap-2"
-          >
-            <SlidersHorizontal size={20} />
-            Manage and Filter
-          </button>
+        <button
+          className="header-nav-button text-body-24 text-[color:var(--text-primary)] px-4 py-1 flex items-center gap-2"
+          onClick={() => setIsFilterModalOpen(true)}
+        >
+          <SlidersHorizontal size={20} />
+          Manage and Filter
+        </button>
           <button
             className="header-delete-button flex items-center justify-center p-2"
             onClick={handleClearData}
@@ -263,6 +266,12 @@ export function GlobalFilterBar() {
           </div>
         </div>
       </div>
+
+      {/* Manage Filter Modal */}
+      <ManageFilterModal 
+        isOpen={isFilterModalOpen} 
+        onClose={() => setIsFilterModalOpen(false)} 
+      />
     </div>
   );
 }
