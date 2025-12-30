@@ -127,13 +127,13 @@ export function GoogleCalendarSelector({
             className="text-[32px] leading-[1.1] font-semibold"
             style={{ color: 'var(--text-primary)', margin: 0 }}
           >
-            Choose Calendars to Analyze
+            Choose Calendars to consider
           </h2>
           <p 
             className="text-[18px] font-medium mt-2"
             style={{ color: 'var(--text-secondary)', margin: 0 }}
           >
-            You can change this later in Manage and Filter
+            You can change this later 
           </p>
         </div>
 
@@ -265,7 +265,7 @@ export function GoogleCalendarSelector({
           <div className="flex items-center gap-3">
             <button
               onClick={handleSelectAll}
-              className="text-body-24 font-medium"
+              className="text-[18px] font-medium"
               style={{ color: 'var(--primary)' }}
               type="button"
             >
@@ -274,7 +274,7 @@ export function GoogleCalendarSelector({
             <span style={{ color: 'var(--text-secondary)' }}>|</span>
             <button
               onClick={handleSelectNone}
-              className="text-body-24 font-medium"
+              className="text-[18px] font-medium"
               style={{ color: 'var(--text-secondary)' }}
               type="button"
             >
@@ -285,19 +285,8 @@ export function GoogleCalendarSelector({
           {/* Right: Action Buttons */}
           <div className="flex items-center gap-3">
             <button
-              onClick={onCancel}
-              className="px-4 py-1 rounded-full text-body-24 font-semibold border border-[color:var(--text-primary)]"
-              style={{
-                backgroundColor: 'transparent',
-                color: 'var(--text-primary)',
-              }}
-              type="button"
-            >
-              Cancel
-            </button>
-            <button
               onClick={handleConfirm}
-              className="px-4 py-1 rounded-full text-body-24 font-semibold"
+              className="px-4 py-1 rounded-full text-[18px] font-semibold"
               style={{
                 backgroundColor: 'var(--primary)',
                 color: 'var(--text-inverse)',
