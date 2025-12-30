@@ -408,7 +408,7 @@ export function ManageFilterModal({ isOpen, onClose }: ManageFilterModalProps) {
                       <button
                         key={filter}
                         onClick={() => setHideActivitiesFilter(filter)}
-                        className="text-[24px] font-medium px-6 border-r border-[color:var(--text-secondary)] last:border-r-0"
+                        className="text-[24px] font-medium px-6 border-r border-[color:var(--text-secondary)]"
                         style={{
                           color: hideActivitiesFilter === filter ? 'var(--text-primary)' : 'var(--text-secondary)',
                           backgroundColor: hideActivitiesFilter === filter ? 'rgba(0, 0, 0, 0.05)' : 'transparent',
@@ -419,6 +419,23 @@ export function ManageFilterModal({ isOpen, onClose }: ManageFilterModalProps) {
                         {filter === "Hidden" && ` (${getFilteredActivities("Hidden").length})`}
                       </button>
                     ))}
+                    {/* Reset All button */}
+                    <button
+                      onClick={() => {
+                        // Reset all hidden activities and issues
+                        setPendingHiddenActivityNames(new Set());
+                        setPendingHiddenIssueIds(new Set());
+                        setInitialHiddenActivityNames(new Set());
+                        setInitialHiddenIssueIds(new Set());
+                      }}
+                      className="text-[24px] font-medium px-6 border-r border-[color:var(--text-secondary)] last:border-r-0"
+                      style={{
+                        color: 'var(--primary)',
+                        backgroundColor: 'transparent',
+                      }}
+                    >
+                      Reset All
+                    </button>
                   </div>
                 </div>
                 
@@ -657,6 +674,9 @@ export function ManageFilterModal({ isOpen, onClose }: ManageFilterModalProps) {
                   
                   // Notify components that hidden state changed (triggers re-render)
                   refreshHiddenState();
+                  
+                  // Show message to user
+                  alert('Filter settings saved! Please refresh the page to see the changes.');
                   
                   onClose();
                 }}

@@ -1,6 +1,5 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useFilter } from "@/contexts/FilterContext";
 import { CalendarEvent } from "@/lib/calculations/stats";
@@ -37,14 +36,6 @@ export function DashboardClient({ events }: DashboardClientProps) {
     minDate,
     maxDate,
   } = useFilter();
-  const { hiddenStateVersion } = useEvents(); // Subscribe to hidden state changes
-  
-  // Force re-render when hiddenStateVersion changes
-  const [, setForceUpdate] = useState(0);
-  useEffect(() => {
-    setForceUpdate(prev => prev + 1);
-  }, [hiddenStateVersion]);
-
   // Filter events by time range
   const timeFilteredEvents = filterEventsByTimeRange(
     events,
@@ -56,10 +47,7 @@ export function DashboardClient({ events }: DashboardClientProps) {
   );
   
   // Filter out hidden activities/issues for statistics
-  // Use useMemo with hiddenStateVersion dependency to ensure re-computation when filters change
-  const filteredEvents = useMemo(() => {
-    return filterHiddenEvents(timeFilteredEvents);
-  }, [timeFilteredEvents, hiddenStateVersion]);
+  const filteredEvents = filterHiddenEvents(timeFilteredEvents);
   
   // Use all events (not filtered by hidden) for the breadcrumb search
   const allEventsForSearch = timeFilteredEvents;
