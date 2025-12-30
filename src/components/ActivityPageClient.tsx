@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useFilter } from "@/contexts/FilterContext";
 import {
   computeActivityStats,
@@ -60,7 +60,12 @@ export function ActivityPageClient({ events, searchString, searchType, timeFilte
     setMaxDate,
   } = useFilter();
   const { hiddenStateVersion } = useEvents(); // Subscribe to hidden state changes
-
+  
+  // Force re-render when hiddenStateVersion changes
+  const [, setForceUpdate] = useState(0);
+  useEffect(() => {
+    setForceUpdate(prev => prev + 1);
+  }, [hiddenStateVersion]);
 
   // Determine search mode based on searchType parameter
   const isExactMatch = searchType === "event";
@@ -87,7 +92,10 @@ export function ActivityPageClient({ events, searchString, searchType, timeFilte
   );
 
   // Filter out hidden activities/issues for statistics only
-  const filteredEvents = filterHiddenEvents(timeFilteredEvents);
+  // Use useMemo with hiddenStateVersion dependency to ensure re-computation when filters change
+  const filteredEvents = useMemo(() => {
+    return filterHiddenEvents(timeFilteredEvents);
+  }, [timeFilteredEvents, hiddenStateVersion]);
   
   // Keep all events for breadcrumb search (not filtered by hidden)
   const allEventsForSearch = timeFilteredEvents;

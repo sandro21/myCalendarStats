@@ -32,7 +32,7 @@ export function GlobalFilterBar() {
   // Check if we should open the filter modal (from upload) - must be before early return
   useEffect(() => {
     // Only check on pages where the filter bar is shown
-    if (pathname === "/upload" || pathname === "/process" || pathname === "/privacy" || pathname === "/terms") {
+    if (pathname === "/" || pathname === "/process" || pathname === "/privacy" || pathname === "/terms") {
       return;
     }
     
@@ -58,8 +58,8 @@ export function GlobalFilterBar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
   
-  // Hide filter bar on upload, process, privacy, and terms pages
-  if (pathname === "/upload" || pathname === "/process" || pathname === "/privacy" || pathname === "/terms") {
+  // Hide filter bar on home, process, privacy, and terms pages
+  if (pathname === "/" || pathname === "/process" || pathname === "/privacy" || pathname === "/terms") {
     return null;
   }
 
@@ -74,8 +74,8 @@ export function GlobalFilterBar() {
       // Refresh events context (will be empty now)
       refreshEvents();
       
-      // Navigate to upload page
-      router.push('/upload');
+      // Navigate to home page
+      router.push('/');
     }
   };
 
