@@ -752,14 +752,14 @@ export function ManageFilterModal({ isOpen, onClose }: ManageFilterModalProps) {
                   refreshHiddenState();
                   
                   // Show message to user
-                  alert('Saved. Refresh to see the changes.');
+                  alert('Filter settings saved! Please refresh the page to see the changes.');
                   
                   onClose();
                 }}
                 className="px-4 py-1 rounded-full text-body-24 font-semibold"
                 style={{
                   backgroundColor: 'var(--primary)',
-                  color: 'var(--text-inverse)',
+                  color: 'var(--inverse-color)',
                 }}
               >
                 Save and Close
