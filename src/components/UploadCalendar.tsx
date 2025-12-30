@@ -94,7 +94,7 @@ export function UploadCalendar({ onUploadComplete }: UploadCalendarProps) {
       refreshEvents();
       
       // Navigate to dashboard and open filter modal
-      router.push('/all-activity?openFilter=true');
+      router.push('/all-activity');
     } catch (err) {
       console.error('Error processing files:', err);
       setError("Failed to process calendar files. Please ensure they are valid .ics files.");
@@ -206,7 +206,7 @@ export function UploadCalendar({ onUploadComplete }: UploadCalendarProps) {
       refreshEvents();
       
       // Navigate to dashboard and open filter modal
-      router.push('/all-activity?openFilter=true');
+      router.push('/all-activity');
     } catch (err: any) {
       console.error('Error importing calendars:', err);
       setError(err.message || "Failed to import calendars. Please try again.");

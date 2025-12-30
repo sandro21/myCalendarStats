@@ -77,9 +77,10 @@ export function GoogleCalendarSelector({
     // Pass ALL calendars (both selected and unselected)
     // Unselected ones will be marked as hidden
     const allCalendars = [...yourCalendars, ...otherCalendars];
+    // Use the same ID format as UploadCalendar: google-${calendar.id}
     const unselectedIds = allCalendars
       .filter(cal => !selectedIds.has(cal.id))
-      .map(cal => cal.id);
+      .map(cal => `google-${cal.id}`);
     
     // Save hidden calendar IDs to localStorage
     if (typeof window !== 'undefined') {

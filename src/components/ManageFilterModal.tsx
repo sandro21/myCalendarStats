@@ -3,6 +3,8 @@
 import { useState, useEffect, useMemo } from "react";
 import { useEvents } from "@/contexts/EventsContext";
 import { detectDataQualityIssues, DataQualityIssue } from "@/lib/calculations/activity-suggestions";
+import { parseIcsToEventsBrowser } from "@/lib/calculations/parse-ics-browser";
+import { CalendarEvent } from "@/lib/calculations/stats";
 import { Eye, EyeOff } from "lucide-react";
 
 interface CalendarSource {
@@ -65,7 +67,7 @@ export function ManageFilterModal({ isOpen, onClose }: ManageFilterModalProps) {
     };
   }, [isOpen]);
 
-  // Initialize hidden activities and issues state when modal opens
+  // Initialize hidden activities, issues, and calendars state when modal opens
   useEffect(() => {
     if (isOpen) {
       // Load from localStorage
@@ -79,12 +81,52 @@ export function ManageFilterModal({ isOpen, onClose }: ManageFilterModalProps) {
       const initialHiddenIssues = storedIssues ? new Set<string>(JSON.parse(storedIssues)) : new Set<string>();
       setInitialHiddenIssueIds(initialHiddenIssues);
       setPendingHiddenIssueIds(initialHiddenIssues);
+      
+      // Initialize hidden calendars from localStorage
+      const storedHiddenCalendars = typeof window !== 'undefined' ? localStorage.getItem('hiddenCalendarIds') : null;
+      const initialHiddenCalendars = storedHiddenCalendars ? new Set<string>(JSON.parse(storedHiddenCalendars)) : new Set<string>();
+      setInitialHiddenCalendarIds(initialHiddenCalendars);
+      setPendingHiddenCalendarIds(initialHiddenCalendars);
     }
   }, [isOpen]); // Remove unused dependencies
 
-  // Get event count for a calendar
+  // Get event count for a calendar (including hidden calendars)
   const getEventCount = (calendarId: string): number => {
-    return events.filter(event => event.calendarId === calendarId).length;
+    if (typeof window === 'undefined') return 0;
+    
+    try {
+      // Load events directly from localStorage to get true count (ignoring hidden calendar filter)
+      const storedCalendars = JSON.parse(localStorage.getItem('uploadedCalendars') || '[]');
+      const calendar = storedCalendars.find((cal: CalendarSource) => cal.id === calendarId);
+      if (!calendar) return 0;
+      
+      // Load removed event IDs
+      const removedEventIds = new Set(JSON.parse(localStorage.getItem('removedEventIds') || '[]'));
+      
+      let calendarEvents: CalendarEvent[] = [];
+      
+      // Check if this is a Google calendar
+      if (calendar.source === 'google' && calendar.googleCalendarId) {
+        // Load events from googleEvents storage
+        const googleEvents = JSON.parse(localStorage.getItem('googleCalendarEvents') || '{}');
+        const storedEvents = googleEvents[calendar.id] || [];
+        // Convert date strings back to Date objects
+        calendarEvents = storedEvents.map((e: any) => ({
+          ...e,
+          start: new Date(e.start),
+          end: new Date(e.end),
+        }));
+      } else if (calendar.icsText) {
+        // Parse ICS file
+        calendarEvents = parseIcsToEventsBrowser(calendar.icsText, calendar.id);
+      }
+      
+      // Filter out removed events
+      return calendarEvents.filter((event) => !removedEventIds.has(event.id)).length;
+    } catch (error) {
+      console.error('Error getting event count:', error);
+      return 0;
+    }
   };
 
   // Get calendar color (default to a color based on index if not set)

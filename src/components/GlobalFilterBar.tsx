@@ -28,25 +28,6 @@ export function GlobalFilterBar() {
   } = useFilter();
 
   const { events, refreshEvents } = useEvents();
-  
-  // Check if we should open the filter modal (from upload) - must be before early return
-  useEffect(() => {
-    // Only check on pages where the filter bar is shown
-    if (pathname === "/" || pathname === "/process" || pathname === "/privacy" || pathname === "/terms") {
-      return;
-    }
-    
-    if (searchParams.get('openFilter') === 'true') {
-      setIsFilterModalOpen(true);
-      // Remove the query parameter from URL
-      const newSearchParams = new URLSearchParams(searchParams.toString());
-      newSearchParams.delete('openFilter');
-      const newUrl = newSearchParams.toString() 
-        ? `${pathname}?${newSearchParams.toString()}`
-        : pathname;
-      router.replace(newUrl);
-    }
-  }, [searchParams, pathname, router]);
 
   // Track scroll position
   useEffect(() => {
