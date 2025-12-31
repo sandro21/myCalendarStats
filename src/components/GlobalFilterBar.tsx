@@ -193,10 +193,11 @@ export function GlobalFilterBar() {
           Manage and Filter
         </button>
           <button
-            className="header-delete-button flex items-center justify-center p-2"
+            className="header-delete-button text-body-24 text-white px-4 py-1 flex items-center gap-2"
             onClick={handleClearData}
           >
-            <Trash2 size={24} className="text-white" />
+            <Trash2 size={20} className="text-white" />
+            <span className="hidden md:inline">Exit</span>
           </button>
         </div>
       </div>
