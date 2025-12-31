@@ -171,7 +171,7 @@
 
 /* Landing page feature cards */
 .landing-feature-card {
-  border-radius: 25px;
+  border-radius: 40px;
   background: var(--card-bg);
   box-shadow: var(--card-shadow);
   backdrop-filter: blur(var(--card-backdrop-blur));
