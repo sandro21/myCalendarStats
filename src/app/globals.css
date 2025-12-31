@@ -1,6 +1,15 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* Force light mode - prevent dark mode */
+html {
+  color-scheme: light !important;
+}
+
+body {
+  color-scheme: light !important;
+}
+
 :root {
   /* ============================================
      PAGE & BACKGROUND COLORS

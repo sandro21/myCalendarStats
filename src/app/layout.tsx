@@ -55,14 +55,15 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en">
+    <html lang="en" style={{ colorScheme: 'light' }}>
       <head>
+        <meta name="color-scheme" content="light" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className={`${urbanist.className} antialiased`}>
+      <body className={`${urbanist.className} antialiased`} style={{ colorScheme: 'light' }}>
         <FilterProvider>
           <EventsProvider>
             <div className="min-h-screen bg-[color:var(--page-bg)] flex flex-col">
