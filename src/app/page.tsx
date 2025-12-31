@@ -58,10 +58,10 @@ export default function Home() {
       <div className="w-full max-w-3xl flex flex-col items-center relative z-10">
         {/* Header Section */}
         <div className="text-center mb-8">
-          <h1 className="text-[36px] md:text-[56px] leading-[1.1] font-bold text-[color:var(--text-primary)] mb-4">
+          <h1 className="text-[36px] md:text-[56px] leading-[1.1] font-bold text-[color:var(--text-primary)] mb-2">
             MyCalendarStats
           </h1>
-          <p className="text-[18px] md:text-body-24 text-[color:var(--text-secondary)] max-w-2xl">
+          <p className="text-[20px] md:text-[24px] font-semibold text-[color:var(--text-secondary)] max-w-2xl">
             Visualize and understand how you spend your time with powerful calendar analytics
           </p>
         </div>
