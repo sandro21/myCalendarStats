@@ -8,6 +8,20 @@ html {
 
 body {
   color-scheme: light !important;
+  background-color: var(--page-bg) !important;
+}
+
+/* Override any dark mode media queries */
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: light !important;
+  }
+  
+  body {
+    color-scheme: light !important;
+    background-color: var(--page-bg) !important;
+    color: var(--text-primary) !important;
+  }
 }
 
 :root {

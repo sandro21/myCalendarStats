@@ -39,7 +39,7 @@ export default function Home() {
       <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
         <img 
           src="/mcs landing.svg" 
-          alt=""
+          alt="Decorative background illustration"
           className="w-full h-full object-cover object-center opacity-30"
           style={{ mixBlendMode: 'multiply' }}
         />
@@ -49,7 +49,7 @@ export default function Home() {
       <div className="absolute pointer-events-none z-0" style={{ top: '20%', left: '90%', transform: 'translateX(-20%) rotate(15deg)' }}>
         <img 
           src="/baloon.png" 
-          alt=""
+          alt="Decorative balloon illustration"
           className="w-auto h-auto opacity-80"
           style={{ maxWidth: '100px', height: 'auto' }}
         />
@@ -79,7 +79,7 @@ export default function Home() {
               <h3 className="text-[32px] font-semibold text-[color:var(--text-primary)]">
                 Secure
               </h3>
-              <img src="/secure.png" alt="" className="w-12 h-12 object-contain opacity-80" />
+              <img src="/secure.png" alt="Security icon representing data protection" className="w-12 h-12 object-contain opacity-80" />
             </div>
             <p className="text-[16px] font-normal text-[color:var(--text-secondary)] leading-relaxed">
               Whether you upload an iCal file or connect your Google Calendar, we access your data solely to generate these personalized statistics. All processing happens locally in your browser, we do not store your calendar data on our servers.
@@ -92,7 +92,7 @@ export default function Home() {
               <h3 className="text-[32px] font-semibold text-[color:var(--text-primary)]">
                 Purpose
               </h3>
-              <img src="/purpose.png" alt="" className="w-12 h-12 object-contain opacity-80" />
+              <img src="/purpose.png" alt="Purpose icon representing goals and objectives" className="w-12 h-12 object-contain opacity-80" />
             </div>
             <p className="text-[16px] font-normal text-[color:var(--text-secondary)] leading-relaxed">
               Gain insights into how you actually spend your time, make better decisions about your schedule and priorities, and understand your time habits to identify areas for improvement.
@@ -105,7 +105,7 @@ export default function Home() {
               <h3 className="text-[32px] font-semibold text-[color:var(--text-primary)]">
                 Features
               </h3>
-              <img src="/features.png" alt="" className="w-12 h-12 object-contain opacity-80" />
+              <img src="/features.png" alt="Features icon representing app capabilities" className="w-12 h-12 object-contain opacity-80" />
             </div>
             <p className="text-[16px] font-normal text-[color:var(--text-secondary)] leading-relaxed">
               Track time logged over time, analyze top activities, discover peak activity times, compare day-of-week patterns, and visualize your calendar data with interactive charts and detailed statistics.
