@@ -215,6 +215,46 @@ body {
   overflow-y: auto;
 }
 
+@media (max-width: 768px) {
+  .modal-container {
+    width: 95vw !important;
+    max-width: 95vw !important;
+    height: 90vh !important;
+    border-radius: 30px !important;
+  }
+
+  /* Decrease font sizes in modal on mobile */
+  .modal-container h2 {
+    font-size: 24px !important;
+    line-height: 1.1 !important;
+  }
+
+  .modal-container h3 {
+    font-size: 20px !important;
+    line-height: 1.1 !important;
+  }
+
+  .modal-container .text-body-24 {
+    font-size: 16px !important;
+  }
+
+  .modal-container button {
+    font-size: 16px !important;
+  }
+
+  .modal-container th {
+    font-size: 14px !important;
+  }
+
+  .modal-container td {
+    font-size: 14px !important;
+  }
+
+  .modal-container p {
+    font-size: 14px !important;
+  }
+}
+
 /* Soft primary background blobs
 .bg-blobs {
   position: relative;
@@ -376,6 +416,11 @@ body {
    ============================================ */
 
 @media (max-width: 768px) {
+  /* Hide hearts on mobile */
+  .heart {
+    display: none !important;
+  }
+
   /* Landing Page - Mobile */
   /* Use attribute selector for main element */
   main[class*="bg-"] {
