@@ -5,6 +5,7 @@ import { GlobalFilterBar } from "@/components/GlobalFilterBar";
 import { Footer } from "@/components/Footer";
 import { FilterProvider } from "@/contexts/FilterContext";
 import { EventsProvider } from "@/contexts/EventsContext";
+import { Suspense } from "react";
 
 const urbanist = Urbanist({
   subsets: ["latin"],
@@ -74,7 +75,9 @@ export default function RootLayout({
 
 
               
-              <GlobalFilterBar />
+              <Suspense fallback={null}>
+                <GlobalFilterBar />
+              </Suspense>
               <div className="flex-1" style={{ position: 'relative', zIndex: 1 }}>
                 {children}
               </div>
