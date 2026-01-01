@@ -46,14 +46,15 @@ export default function Home() {
       </div>
       
       {/* Balloon above mountains */}
-      <div className="absolute pointer-events-none z-0" style={{ top: '20%', left: '90%', transform: 'translateX(-20%) rotate(15deg)' }}>
+      <div className="absolute pointer-events-none z-0" style={{ top: '30%', left: '84%', transform: 'translateX(-20%) rotate(15deg)' }}>
         <img 
           src="/baloon.png" 
           alt="Decorative balloon illustration"
-          className="w-auto h-auto opacity-80"
+          className="w-auto h-auto opacity-30"
           style={{ maxWidth: '100px', height: 'auto' }}
         />
       </div>
+
       
       <div className="w-full max-w-3xl flex flex-col items-center relative z-10">
         {/* Header Section */}
