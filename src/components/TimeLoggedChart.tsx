@@ -81,9 +81,6 @@ export function TimeLoggedChart({ events, title = "Time Logged" }: TimeLoggedCha
     }
   }, [selectedFilter]);
 
-  // Use mobile interval on mobile, default interval on desktop
-  const effectiveInterval = (isMobile ? mobileInterval : defaultInterval) as IntervalType;
-
   const [selectedInterval, setSelectedInterval] = useState<IntervalType>(defaultInterval);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -95,6 +92,9 @@ export function TimeLoggedChart({ events, title = "Time Logged" }: TimeLoggedCha
       setSelectedInterval(defaultInterval);
     }
   }, [defaultInterval, mobileInterval, isMobile]);
+
+  // Use mobile interval on mobile, selected interval on desktop
+  const effectiveInterval = (isMobile ? mobileInterval : selectedInterval) as IntervalType;
 
   // Group events by interval and calculate total minutes
   const chartData = useMemo(() => {
@@ -405,41 +405,69 @@ export function TimeLoggedChart({ events, title = "Time Logged" }: TimeLoggedCha
       {/* Title - Show on all screens, filter only on desktop */}
       <div className="mb-2 md:mb-4 flex items-center justify-between px-3 md:px-6 flex-shrink-0 h-auto">
         <h3 className="text-card-title text-sm md:text-base">{title}</h3>
-        {/* Interval Selector - Only show on desktop */}
-        <div className="relative flex-shrink-0 hidden md:block">
-          <div 
-            className="bg-white px-3 py-1.5 rounded-full flex items-center gap-1.5 cursor-pointer text-[18px] text-[color:var(--text-primary)] h-auto flex-shrink-0"
-            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          >
-            <span>Interval: {selectedInterval}</span>
-            <ChevronDown size={14} className={`transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+        {/* Interval Selector - Only show on desktop, hidden on mobile */}
+        {!isMobile && (
+          <div className="relative flex-shrink-0 hidden md:block">
+            <div 
+              className="bg-white px-3 py-1.5 rounded-full flex items-center gap-1.5 cursor-pointer text-[18px] text-[color:var(--text-primary)] h-auto flex-shrink-0 select-none"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setIsDropdownOpen(!isDropdownOpen);
+              }}
+              onTouchStart={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setIsDropdownOpen(!isDropdownOpen);
+              }}
+            >
+              <span>Interval: {selectedInterval}</span>
+              <ChevronDown size={14} className={`transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+            </div>
+            
+            {isDropdownOpen && (
+              <>
+                <div 
+                  className="fixed inset-0 z-10 hidden md:block" 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setIsDropdownOpen(false);
+                  }}
+                  onTouchStart={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setIsDropdownOpen(false);
+                  }}
+                />
+                <div className="absolute top-full mt-2 right-0 bg-white rounded-lg shadow-lg z-20 min-w-[180px] hidden md:block">
+                  {availableIntervals.map((interval) => (
+                    <button
+                      key={interval}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setSelectedInterval(interval);
+                        setIsDropdownOpen(false);
+                      }}
+                      onTouchStart={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setSelectedInterval(interval);
+                        setIsDropdownOpen(false);
+                      }}
+                      className={`w-full text-left px-3 py-1.5 text-[18px] text-[color:var(--text-primary)] hover:bg-gray-100 first:rounded-t-lg last:rounded-b-lg select-none ${
+                        selectedInterval === interval ? 'bg-[color:var(--primary-10)]' : ''
+                      }`}
+                    >
+                      {interval}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
-          
-          {isDropdownOpen && (
-            <>
-              <div 
-                className="fixed inset-0 z-10" 
-                onClick={() => setIsDropdownOpen(false)}
-              />
-              <div className="absolute top-full mt-2 right-0 bg-white rounded-lg shadow-lg z-20 min-w-[180px]">
-                {availableIntervals.map((interval) => (
-                  <button
-                    key={interval}
-                    onClick={() => {
-                      setSelectedInterval(interval);
-                      setIsDropdownOpen(false);
-                    }}
-                    className={`w-full text-left px-3 py-1.5 text-[18px] text-[color:var(--text-primary)] hover:bg-gray-100 first:rounded-t-lg last:rounded-b-lg ${
-                      selectedInterval === interval ? 'bg-[color:var(--primary-10)]' : ''
-                    }`}
-                  >
-                    {interval}
-                  </button>
-                ))}
-              </div>
-            </>
-          )}
-        </div>
+        )}
       </div>
 
       <div className="flex-1 min-h-0 w-full">
