@@ -40,7 +40,7 @@ export default function Home() {
         <img 
           src="/mcs landing.svg" 
           alt="Decorative background illustration"
-          className="w-full h-full object-cover object-center opacity-30"
+          className="w-full h-full object-cover object-center opacity-20"
           style={{ mixBlendMode: 'multiply' }}
         />
       </div>
@@ -50,8 +50,8 @@ export default function Home() {
         <img 
           src="/baloon.png" 
           alt="Decorative balloon illustration"
-          className="w-auto h-auto opacity-30"
-          style={{ maxWidth: '100px', height: 'auto' }}
+          className="w-auto h-auto opacity-0"
+          style={{ maxWidth: '150px', height: 'auto' }}
         />
       </div>
 
