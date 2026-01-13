@@ -6,6 +6,7 @@ import { Footer } from "@/components/Footer";
 import { FilterProvider } from "@/contexts/FilterContext";
 import { EventsProvider } from "@/contexts/EventsContext";
 import { Suspense } from "react";
+import { Analytics } from "@vercel/analytics/next";
 
 const urbanist = Urbanist({
   subsets: ["latin"],
@@ -167,6 +168,7 @@ export default function RootLayout({
             </div>
           </EventsProvider>
         </FilterProvider>
+        <Analytics />
       </body>
     </html>
   );
